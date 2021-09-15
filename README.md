@@ -26,11 +26,11 @@ Create the user account and start messaging.
 ### Home page
 ![Alt text](https://github.com/sohaib-gujjar/ecompanion/blob/master/react-ecompanion-app/public/home.png "Optional Title")
 ### Dashboard
-![Alt text](https://github.com/sohaib-gujjar/ecompanion/react-ecompanion-app/public/dashboard.png?raw=true "Optional Title")
+![Alt text](https://github.com/sohaib-gujjar/ecompanion/blob/master/react-ecompanion-app/public/dashboard.png "Optional Title")
 ### Sign Up page
-![Alt text](https://github.com/sohaib-gujjar/ecompanion/react-ecompanion-app/public/register.png?raw=true "Optional Title")
+![Alt text](https://github.com/sohaib-gujjar/ecompanion/blob/master/react-ecompanion-app/public/register.png "Optional Title")
 ### Sign In page
-![Alt text](https://github.com/sohaib-gujjar/ecompanion/react-ecompanion-app/public/login.png?raw=true "Optional Title")
+![Alt text](https://github.com/sohaib-gujjar/ecompanion/blob/master/react-ecompanion-app/public/login.png?raw=true "Optional Title")
 
 
 ## Swagger Documentation
