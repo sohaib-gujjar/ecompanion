@@ -1,0 +1,55 @@
+/*----------------------Variables-------------------*/
+
+
+$font-color: #375d4e;
+$font-family: CircularStd;
+$large-text: 2rem;
+$medium-text: 1.5rem;
+$normal-text: 1.2rem;
+$small-text: 1rem;
+
+$sec-color: #2881f5;
+/*-------------------------------------------------*/
+/*----------------------Mixins-------------------*/
+@mixin margins($top, $right, $bottom, $left) {
+  @if ($top != null) {
+    margin-top: $top;
+  }
+  @if ($right != null) {
+    margin-right: $right;
+  }
+  @if ($bottom != null) {
+    margin-bottom: $bottom;
+  }
+  @if ($left != null) {
+    margin-left: $left;
+  }
+}
+
+@mixin positions($top, $right, $bottom, $left) {
+  @if ($top != null) {
+    top: $top;
+  }
+  @if ($right != null) {
+    right: $right;
+  }
+  @if ($bottom != null) {
+    bottom: $bottom;
+  }
+  @if ($left != null) {
+    left: $left;
+  }
+}
+@mixin width-height($width, $height) {
+  @if ($width == null) {
+    width: $height;
+    height: $height;
+  } @else if($height == null) {
+    width: $width;
+    height: $width;
+  } @else {
+    width: $width;
+    height: $height;
+  }
+}
+/***********************************************************/
