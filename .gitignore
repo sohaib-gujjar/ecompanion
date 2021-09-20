@@ -2,9 +2,12 @@ node-ecomapanion-server/node_modules
 react-ecomapanion-app/node_modules
 
 
-node-ecomapanion-server/thisgitignore.cs
-
-react-ecompanion-app/thisgitignore.cs
-
-
 node-ecomapanion-server/request.rest
+
+node-ecomapanion-server/package-lock.json
+
+react-ecompanion-app/package-lock.json
+
+
+Slack.png
+slack_e-r.png

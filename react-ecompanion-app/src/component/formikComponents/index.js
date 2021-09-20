@@ -10,4 +10,7 @@ export * from './DateInput'
 export * from './DropDownInput'
 export * from './InputFileComponents'
 export * from './RangeSlider'
+export * from './CustomInputTagsDropdown'
+export * from './ImageUploader'
+
 

@@ -44,7 +44,7 @@ export default class Header extends React.Component {
             <Row>
               <Col sm={4} md={4} lg={4} className="icon">
                 <a href="/">
-                  <img src="favicon.ico"></img>
+                  <img src="favicon.ico" alt=""></img>
                   <span className="app-title">E Companion</span>
                 </a>
               </Col>

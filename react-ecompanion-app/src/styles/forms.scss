@@ -36,6 +36,14 @@ body {
     margin: 1% 0% 1% 0%;
     box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
     max-width: 800px;
+
+    .error {
+      position: relative;
+      float: right;
+      color: red;
+      margin: 4px 0;
+      font-size: small;
+    }
   }
   
   
@@ -66,6 +74,22 @@ body {
     textarea::placeholder {
       color: #555;
     }
+
+    
+  }
+  input[type= date] {
+    width: 100%;
+    font-size: 1.2rem;
+    display: block;
+    padding: 0.5rem 1rem;
+    box-shadow: 2px 2px 5px 1px rgba(0,0,0,0.3);
+    border: none;
+    border-radius: 5px;
+
+    &:focus {
+      border: none;
+      color: transparent;
+    }
   }
   .input-component {
     margin-bottom: 3%;
@@ -92,12 +116,6 @@ body {
     }
     textarea {
       overflow: hidden;
-    }
-    .error {
-      position: relative;
-      float: right;
-      color: red;
-      margin: 4px 0;
     }
     .placeholder {
       font-size: 0.8rem;
@@ -314,4 +332,196 @@ body {
   /*******************************************************************************************************************************/
   
   /********************************************************************/
+  .checkbox-group {
+    margin: 2% 0;
+    @media screen and (max-width: 700px) {
+      width: 89%;
+    }
+    .title {
+      font-weight: 600;
+      font-size: $normal-text;
+    }
+    .carton {
+      margin: 1% 0;
+      display: block;
+      position: relative;
+      padding-left: 60px;
+      cursor: pointer;
+      font-size: 22px;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      .radio-title {
+        font-weight: bold;
+        font-size: $normal-text;
+      }
+      .radio-description {
+        font-size: $small-text;
+      }
+      
+      input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+      }
+    }
+    .checkmark {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 35px;
+      width: 35px;
+      background-color: #eee;
+      border: 1px darkgray solid;
+      border-radius: 10%;
+      
+      &.radio {
+        border-radius: 50% !important;
+      }
+    }
   
+    
+    .carton:hover input ~ .checkmark {
+      background-color: #ccc;
+    }
+    .carton input:checked ~ .checkmark {
+      background-color: #fff;
+    }
+    .checkmark:after {
+      content: "";
+      position: absolute;
+      display: none;
+    }
+    .carton input:checked ~ .checkmark:after {
+      display: block;
+    }
+    .carton .checkmark:after {
+      top: 4px;
+      left: 4px;
+      width: 25px;
+      height: 25px;
+      background: $sec-color;
+      border-radius: 10%; 
+    }
+    .carton .radio:after {
+      border-radius: 50%;
+    }
+  }
+
+
+  /*--------------tags ----------------*/
+
+.custom-input-tags-dropdown {
+  width: 100%;
+  p {
+    &.title {
+      font-weight: bold;
+      font-size: $normal-text;
+    }
+  }
+
+  .tags-container {
+    border: 1px solid lightgray;
+    padding: 3%;
+    border-radius: 15px;
+    .item-container {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      .tag {
+        display: flex;
+        flex-direction: row;
+        width: fit-content;
+        white-space: pre;
+
+        .close {
+          font-size: 0.8rem;
+          margin-left: 3px;
+          position: relative;
+          float: none;
+        }
+      }
+    }
+
+    .add-tag {
+      position: relative;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+
+      padding: 2% 4%;
+      font-size: $small-text;
+
+      span {
+        margin-top: 5px;
+        margin-bottom: 3px;
+        margin-right: 7px;
+        white-space: pre;
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
+/*-----------------------------------------------*/
+
+/****************    .custom-select ***************************/
+
+.custom-select {
+  
+    width: 100%;
+    border: 1px solid var(--select-border);
+    border-radius: 5px;
+    
+    padding: 0.5rem 1rem;
+    font-size: 1.25rem;
+    cursor: pointer;
+    line-height: 1.1;
+    background-color: #fff;
+    background-image: linear-gradient(to top, #f9f9f9, #fff 33%);
+    box-shadow: 2px 2px 5px 1px rgba(0,0,0,0.3);
+  
+    position: relative;
+    font-family: Arial;
+
+    display: grid;
+
+    &:focus {
+      border-color: #aaa;
+      box-shadow: 0 0 1px 3px rgba(59, 153, 252, .2);
+      color: #222; 
+      outline: none;
+    }
+
+
+    option {
+      color: #666;
+      padding: 8px 16px;
+      border: 1px solid transparent;
+      border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+      cursor: pointer;
+      user-select: none;
+
+    
+    }
+    
+
+
+  &::before, &::after {
+    box-sizing: border-box;
+  }
+  &::after{
+    content: "";
+    width: 0.8em;
+    height: 0.5em;
+    background-color: var(--select-arrow);
+    clip-path: polygon(100% 0%, 0 0%, 50% 100%);
+    grid-area: select;
+    justify-self: end;
+  }
+
+}
+
+/**************************************************/

@@ -1,43 +1,49 @@
 import { Formik, Form } from "formik";
 import { TextInputResponsive } from "../component/formikComponents";
 import { RememberMe } from "../component/formikComponents";
-import UserContext from '../UserContext';
+import {UserContext} from '../context/UserContext';
 import Cookies from "js-cookie";
 import { useContext } from "react";
 
 export default function Signin() {
-    const { context, setContext } = useContext(UserContext);
+    const context = useContext(UserContext);
 
-    function onSubmit(credentials, setSubmitting) {
+    function onSubmit(values, setSubmitting) {
         setSubmitting(true);
         fetch("http://localhost:3001/auth/login", {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify(credentials)
+            body: JSON.stringify(values)
           })
             .then(async response => {
-                console.log(response.data)
-                const token = response.headers['x-auth-token'];
-                console.log(token)
-                if(token) {
-                    Cookies.set('token', token);
-                    return null
+                if (response.status === 200) {
+                    console.log(response.data)
+                    const token = response.headers['x-auth-token'];
+                    console.log(token)
+                    if(token) {
+                        document.cookie = token + '=' + token + ';' + 60000 + ';';
+                        Cookies.set('token', token);
+                        return response.json()
+                    }
+                    else return response.json()
                 }
-                else return response.json()
+
+                return response.json().then(err => { throw Error(err) });
             })
             .then(res => {
                 console.log(res)
-                if(res)
+                if(res.user)
                 {
-                    setContext({ user: res.user})
-                    window.location.href = "/dashboard"
+                    context.setUserContext({ user: res.user})
+                    //window.location.href = "/dashboard"
                 }
                 else alert(JSON.stringify(res))
             })
             .catch(err => {
                 console.log(err.message)
+                alert(err)
             })
             .finally(() => {
                 setSubmitting(false);
@@ -47,7 +53,7 @@ export default function Signin() {
         <div className="signup-form">
                 <h1>Login!</h1>
                 <Formik
-                    initialValues={{ email: '', remember: false, password: '' }}
+                    initialValues={{ email: 'sohaibakbar@gmx.de', remember: false, password: '12345678' }}
                     validate={values => {
                         const errors = {};
                         if (!values.email) {

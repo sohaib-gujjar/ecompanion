@@ -58,38 +58,38 @@ export default function Home() {
             </Row>
             <Row style={{ textAlign: "center" }}>
               <Col sm={3}>
-                <img src="user.png" />
+                <img src="user.png" alt=""/>
                 <h4>Team Member</h4>
                 <p>Software Engineer</p>
-                <a href="#" className="fa fa-linkedin"></a>
-                <a href="#" className="fa fa-instagram"></a>
-                <a href="#" className="fa fa-facebook"></a>
-                <a href="#" className="fa fa-twitter"></a>
+                <a href="#" className="fa fa-linkedin"/>
+                <a href="#" className="fa fa-instagram"/>
+                <a href="#" className="fa fa-facebook"/>
+                <a href="#" className="fa fa-twitter"/>
               </Col>
               <Col sm={3}>
-                <img src="user.png" />
+                <img src="user.png" alt=""/>
                 <h4>Team Member</h4>
                 <p>Backend Developer</p>
-                <a href="#" className="fa fa-linkedin"></a>
-                <a href="#" className="fa fa-instagram"></a>
-                <a href="#" className="fa fa-facebook"></a>
-                <a href="#" className="fa fa-twitter"></a>
+                <a href="#" className="fa fa-linkedin"/>
+                <a href="#" className="fa fa-instagram"/>
+                <a href="#" className="fa fa-facebook"/>
+                <a href="#" className="fa fa-twitter"/>
               </Col>
-              <Col sm={3}> <img src="user.png" />
+              <Col sm={3}> <img src="user.png" alt=""/>
                 <h4>Team Member</h4>
                 <p>Frontend Developer</p>
-                <a href="#" className="fa fa-linkedin"></a>
-                <a href="#" className="fa fa-instagram"></a>
-                <a href="#" className="fa fa-facebook"></a>
-                <a href="#" className="fa fa-twitter"></a>
+                <a href="#" className="fa fa-linkedin"/>
+                <a href="#" className="fa fa-instagram"/>
+                <a href="#" className="fa fa-facebook"/>
+                <a href="#" className="fa fa-twitter"/>
               </Col>
-              <Col sm={3}> <img src="user.png" />
+              <Col sm={3}> <img src="user.png" alt=""/>
                 <h4>Team Member</h4>
                 <p>Designer</p>
-                <a href="#" className="fa fa-linkedin"></a>
-                <a href="#" className="fa fa-instagram"></a>
-                <a href="#" className="fa fa-facebook"></a>
-                <a href="#" className="fa fa-twitter"></a>
+                <a href="#" className="fa fa-linkedin"/>
+                <a href="#" className="fa fa-instagram"/>
+                <a href="#" className="fa fa-facebook"/>
+                <a href="#" className="fa fa-twitter"/>
               </Col>
             </Row>
           </Container>
@@ -236,11 +236,11 @@ export default function Home() {
                 <p>All right reserved. &#169;2021</p>
               </Col>
               <Col sm={6} style={{ textAlign: "end"}}>
-                <a href="#" className="fa fa-facebook"></a>
-                <a href="#" className="fa fa-twitter"></a>
-                <a href="#" className="fa fa-linkedin"></a>
-                <a href="#" className="fa fa-youtube"></a>
-                <a href="#" className="fa fa-instagram"></a>
+                <a href="#" className="fa fa-facebook"/>
+                <a href="#" className="fa fa-twitter"/>
+                <a href="#" className="fa fa-linkedin"/>
+                <a href="#" className="fa fa-youtube"/>
+                <a href="#" className="fa fa-instagram"/>
               </Col>
             </Row>
           </Container>

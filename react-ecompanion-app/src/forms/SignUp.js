@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 import { Formik, Form } from "formik";
-import { TermsConditions, TextAreaInput, TextInput } from "../component/formikComponents";
+import { DateInput, DropDownInput, RadioGroup, TermsConditions, TextAreaInput, TextInput } from "../component/formikComponents";
 import { ImageUploader } from "../component/formikComponents/ImageUploader";
 
 export default class SignUp extends Component {
-    constructor(props) {
-        super(props);
-    }
+
     onSubmit = (values, { setSubmitting }) => {
         setSubmitting(true)
+
+        alert(JSON.stringify(values))
 
         fetch("http://localhost:3001/auth/register", {
             method: 'POST',
@@ -17,28 +17,46 @@ export default class SignUp extends Component {
             },
             body: JSON.stringify(values)
         })
-        .then( response => response.json())
-        .then( res => {
-            console.log(res)
-            setSubmitting(false)
-            if (res) {
-                window.location.href = "/signin"
-            }
-        })
-        .catch(err => {
-            setSubmitting(false)
-            console.log(err)
-        })
+            .then(res => {
+                if (res.status === 200) {
+                    return res.json();
+                }
+
+                return res.json().then(({ message }) => {
+                    throw Error(message);
+                });
+            })
+            .then(res => {
+                console.log(res)
+                setSubmitting(false)
+                if (res) {
+                    window.location.href = "/signin"
+                }
+            })
+            .catch(err => {
+                setSubmitting(false)
+                console.log(err)
+                alert(err)
+            })
     }
     render() {
         return (
             <div className="signup-form">
                 <h1>Become a member!</h1>
                 <Formik
-                    initialValues={{ 
-                        firstName: '', lastName: '', email: '', 
-                        description: '', password: '', icon: null, 
-                        terms: false, type: '' }}
+                    initialValues={{
+                        firstName: '', 
+                        lastName: '', 
+                        email: '',
+                        description: '', 
+                        password: '', 
+                        icon: null,
+                        gender: '', 
+                        tags: [],
+                        terms: false, 
+                        channel: [{id: "female", label: "Female"},{id: "male", label: "Male"}],
+                        dob: "2000-01-01"
+                    }}
                     validate={values => {
                         const errors = {};
                         if (!values.email) {
@@ -58,6 +76,9 @@ export default class SignUp extends Component {
                             errors.password = 'Required';
                         } else if (values.password.length < 8) {
                             errors.password = 'Password contain atleast 8 characters';
+                        }
+                        if (!values.terms) {
+                            errors.terms = 'you need to accept terms & condition';
                         }
                         return errors;
                     }}
@@ -97,18 +118,32 @@ export default class SignUp extends Component {
                                 placeholder=""
                                 onChange={formProps.setFieldValue}
                             />
-                            {/*<DropDownInput title="Type" value="type" onChange={formProps.setFieldValue} 
-                                options={[{id: 1, label: "active"}, {id: 2, label: "passive"}]}/>*/}
+                            <DateInput value="dob" initValue={formProps.values.dob} title="Date of birth" onChange={formProps.setFieldValue}/>
+                            <DropDownInput title="Select channel" value="channel" onChange={formProps.setFieldValue} 
+                                options={[{id: 1, label: "active"}, {id: 2, label: "passive"}]}/>
+                            <RadioGroup 
+                                title="Gender" value="gender" onChange={formProps.setFieldValue} 
+                                options={formProps.values.channel}
+                            />
+                            
+                            {/*<CustomInputTagsDropdown
+                                title="Tags"
+                                value="tags"
+                                items={[{tag: 'tag1'}, {tag: 'tag2'}, {tag: 'tag3'}, {tag: 'tag4'}, {tag: 'tag5'}]}
+                                placeholder="select tags"
+                                onChange={formProps.setFieldValue}
+                                selected={formProps.values.tags}
+                            />*/}
                             <ImageUploader
                                 title="Choose your picture"
                                 value="icon"
                                 data={formProps.values.icon}
-                                placeholder="we recommend a resolution of 256 x 256 pixel."
+                                placeholder="recommended resolution 256 x 256 pixel."
                                 height="256px"
-                                width="256px"
+                                //width="256px"
                                 onChange={formProps.setFieldValue}
                             />
-                            <TermsConditions value="terms" />
+                            <TermsConditions value="terms" checked={formProps.values.terms}/>
                             <div className="formbuttondiv">
                                 <button type="submit" className="formbutton"
                                     disabled={formProps.isSubmitting}

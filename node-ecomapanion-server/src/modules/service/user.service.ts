@@ -1,6 +1,6 @@
 import { getManager } from "typeorm";
-import CreateUserDto from "../model/user/user.dto";
-import { User } from "../model/user/user.entity";
+import CreateUserDto from "../dto/user.dto";
+import { User } from "../model/user.entity";
 
 /**
  * Export functionality.

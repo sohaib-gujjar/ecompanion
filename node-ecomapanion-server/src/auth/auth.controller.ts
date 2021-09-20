@@ -40,7 +40,7 @@ AuthRouter.post(`${path}/login`, validateDTO(LoginDTO), async (req: Request, res
           res.cookie("token", token, {httpOnly: true, secure: process.env.ENVIRONMENT === "production"})
             .header("x-auth-token", token)
             .status(200)
-            .json({ message: "Logged in successfully 😊 👌", user: { email: user.email, firstname: user.firstName, lastname: user.lastName} });
+            .json({ user: { email: user.email, firstname: user.firstName, lastname: user.lastName, token: token} });
           
         } catch (error) {
           console.log(error)

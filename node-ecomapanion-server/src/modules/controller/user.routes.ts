@@ -1,6 +1,6 @@
 import express, { NextFunction, Request, Response } from "express";
 import validateDTO from "../../@base/middleware/validateDTO.middleware";
-import CreateUserDto from "../model/user/user.dto";
+import CreateUserDto from "../dto/user.dto";
 import UserService from "../service/user.service";
 
 /**

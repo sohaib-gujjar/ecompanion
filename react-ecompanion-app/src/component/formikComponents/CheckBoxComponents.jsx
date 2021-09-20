@@ -1,6 +1,5 @@
 import React from "react";
 import { Field } from "formik";
-import PropTypes from "prop-types";
 import _ from "lodash";
 
 export class CheckBoxGroup extends React.Component {
@@ -65,13 +64,6 @@ export class CheckBoxGroup extends React.Component {
     );
   }
 }
-CheckBoxGroup.propTypes = {
-  title: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
-  options: PropTypes.array.isRequired,
-  selected: PropTypes.string,
-  onChange: PropTypes.func.isRequired
-};
 export class RadioGroup extends React.Component {
   componentDidMount() {
     if (!this.props.selected) this.props.onChange(this.props.value, this.props.options[0]);
@@ -112,10 +104,3 @@ export class RadioGroup extends React.Component {
     );
   }
 }
-RadioGroup.propTypes = {
-  title: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
-  options: PropTypes.array.isRequired,
-  selected: PropTypes.any,
-  onChange: PropTypes.func.isRequired
-};

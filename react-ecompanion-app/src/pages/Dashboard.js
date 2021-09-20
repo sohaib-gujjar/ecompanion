@@ -3,56 +3,23 @@ import { Col, Container, Row, Button } from "react-bootstrap";
 import Header from "../component/Header";
 import '../styles/dashboard.scss';
 import _ from 'lodash';
-import UserContext from '../UserContext';
-import Cookies from "js-cookie";
+import { UserContext } from '../context/UserContext';
 
-export default function Setting() {
+export default function Dashboard() {
 
-
-    function getToken() {
-        /*const tokenString = sessionStorage.getItem('token');
-        console.log(tokenString)
-        const userToken = JSON.parse(tokenString);
-        console.log(userToken)
-        if (tokenString) return true;
-        else return false;*/
-
-        console.log("getToken")
-        
-        const token = Cookies.get('token');
-        if (token) {
-            console.log(token)
-
-            const user = parseJWT(token).user;
-            setUser(user);
-            setContext(user)
-            return true;
-        }
-        else return false;
-    }
-    function parseJWT(token) {
-        var base64Url = token.split(".")[1];
-        var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-        return JSON.parse(
-            decodeURIComponent(
-                atob(base64)
-                    .split("")
-                    .map(function (c) {
-                        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-                    })
-                    .join("")
-            )
-        );
-    }
-
-
-    const [token, setToken] = useState(getToken());
     const [user, setUser] = useState(null);
-    const { context, setContext } = useContext(UserContext);
+
+    const context = useContext(UserContext);
 
 
     useEffect(() => {
-        if (!token) {
+        if (context) {
+            console.log("getToken", context)
+            if (context.user) {
+                setUser(user);
+            }
+        }
+        if (!user) {
             //window.location.href = "/signin";
         }
     });
@@ -103,7 +70,7 @@ function TeamsAndContacts({ teamsJoined, channelJoined, contacts, onContactChang
                 <span>Team Name</span>
                 <div >
                     {_.map(teamsJoined, (data, i) => {
-                        return <span key={"tname"+i} onClick={(e) => onTeamChange(e, data)}>{data.name}</span>
+                        return <span key={"tname" + i} onClick={(e) => onTeamChange(e, data)}>{data.name}</span>
                     })}
                 </div>
             </div>
@@ -111,7 +78,7 @@ function TeamsAndContacts({ teamsJoined, channelJoined, contacts, onContactChang
                 <span>Channels</span>
                 <div >
                     {_.map(channelJoined, (data, i) => {
-                        return <span key={"channel"+i} onClick={(e) => onChannelChange(e, data)}>{data.name}</span>
+                        return <span key={"channel" + i} onClick={(e) => onChannelChange(e, data)}>{data.name}</span>
                     })}
                 </div>
             </div>
@@ -119,7 +86,7 @@ function TeamsAndContacts({ teamsJoined, channelJoined, contacts, onContactChang
                 <span>Direct message</span>
                 <div >
                     {_.map(contacts, (data, i) => {
-                        return <span key={"dm"+i} onClick={(e) => onContactChange(e, data)}>{data.name}</span>
+                        return <span key={"dm" + i} onClick={(e) => onContactChange(e, data)}>{data.name}</span>
                     })}
                 </div>
             </div>

@@ -1,31 +1,26 @@
 import React from 'react';
 import { Field, ErrorMessage } from 'formik';
-import PropTypes from 'prop-types';
+import { Col, Row } from 'react-bootstrap';
 
-/**
- * @author Sohaib Akbar
-*/
 
-export class DateInput extends React.Component {
-  render() {
-    return (
-      <div>
+export function DateInput({ value, initValue, title, onChange }) {
+  return (
+    <Row style={{ marginBottom: "3%", marginTop: "6%" }}>
+      <Col sm={4}>
+        <label>{title}  </label>
+      </Col>
+      <Col sm={8}>
         <Field
-          id={"formik-date-" + this.props.value}
-          name={this.props.value}
+          id={"formik-date-" + value}
+          name={value}
           type="date"
-          placeholder={this.props.placeholder ? this.props.placeholder : "..."}
+          value={initValue}
           onChange={e => {
-            this.props.onChange(this.props.value, e.target.value);
+            onChange(value, e.target.value);
           }}
         />
-        <ErrorMessage name={this.props.value}>{msg => <span className="error" style={{position: 'unset'}}>{msg}</span>}</ErrorMessage>
-      </div>
-    );
-  }
+        <ErrorMessage name={value}>{msg => <span className="error" style={{ position: 'unset' }}>{msg}</span>}</ErrorMessage>
+      </Col>
+    </Row>
+  );
 }
-DateInput.propTypes = {
-    value: PropTypes.string.isRequired,
-    placeholder: PropTypes.string,
-    onChange: PropTypes.func.isRequired
-};

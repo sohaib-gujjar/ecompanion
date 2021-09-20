@@ -1,5 +1,5 @@
-import CreateUserDto from "../modules/model/user/user.dto";
-import { User } from "../modules/model/user/user.entity";
+import CreateUserDto from "../modules/dto/user.dto";
+import { User } from "../modules/model/user.entity";
 import UserService from "../modules/service/user.service";
 import LoginDTO from "./login.dto";
 import bcryptjs from "bcryptjs";

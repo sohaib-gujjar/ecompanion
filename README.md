@@ -16,6 +16,13 @@ To get the Node server running locally:
 cd node-ecomapanion-server/ && npm install
 cd react-ecompanion-app/ && npm install
 ```
+- Before starting backend you need to create database and update database credentials to `ormconfig.js` and then run migrations.
+```sh
+cd  node-ecomapanion-server/ 
+- npm run migrate:generate
+- npm run migrate:run
+- npm run start
+```
 - In the fronend and backend directory, you can run: `npm run start`
 
 Runs the app in the development mode.<br />
@@ -74,20 +81,21 @@ server /
 ### Frontend
 
 ```txt
-react-app /
-    |---- src/			            // source files
+react-ecompanion-app /
+    |---- src/
         |---- index.js		        // start page of react app
         |---- App.js		        // Start point of react application, implementation of `Routes`
+        |---- context/
+            |---- UserContext.js    // User context
         |---- pages/			    // pages
-            |---- 404Page.js		// display this page if route isn't define 
-            |---- DefaultPage.js    // Home page
-            |---- Search.js         // Search repositories
-            |---- BookMarkedRepos.js    // display bookmarked repositories
-        |---- forms/			// 
+            |---- Home.js           // Home page
+            |---- Dashboard.js      // Messaging window
+        |---- forms/
             |---- SignUp.js		    // register user form, with input validation
-            |---- SignIn.js		// login user form, with input validation
+            |---- SignIn.js		    // login user form, with input validation
         |---- components/			// small components
             |---- Header.js		    // app header and menu
+            |---- UserInfo.js		// menu
             |---- formikcomponents/		// text input, textarea, dropdown, image uploader, multiple files uploader
         |---- styles	            // home, dashboard, forms styles
             |---- App.scss	        // app css

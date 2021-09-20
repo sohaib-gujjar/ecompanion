@@ -6,7 +6,7 @@ export default function SignIN() {
     return (
         <Header active>
             <div className="signin-page">
-                <Signin></Signin>
+                <Signin />
             </div>
         </Header>
     );

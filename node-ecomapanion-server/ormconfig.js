@@ -6,7 +6,7 @@ module.exports = {
     port: 3306,
     username: "root",
     password: "password",
-    database: "test",
+    database: "e-companion", //Create database `e-companion`;
     entities: [`${SOURCE}/**/*.entity{.ts,.js}`],
     synchronize: false,
     dropSchema: false,

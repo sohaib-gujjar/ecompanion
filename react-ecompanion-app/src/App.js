@@ -1,14 +1,20 @@
-import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
 import SignUP from "./pages/SignUP";
 import SignIN from "./pages/SignIN";
 import Setting from "./pages/Setting";
 import './styles/App.scss';
+import {  useState } from "react";
+import { UserProvider } from "./context/UserContext";
 
 function App() {
+
+  const [user, setUserContext] = useState(false);
+
   return (
-    <Router>
+    <UserProvider value={{user, setUserContext}}>
+      <Router>
         <Switch>
           <Route exact path="/">
             <Home />
@@ -26,16 +32,17 @@ function App() {
             <Setting />
           </Route>
           <Route path="/logout" component={(() => {
-                sessionStorage.removeItem('token');
-                window.location.href = "/"
-            })}>
+            //sessionStorage.removeItem('token');
+            window.location.href = "/"
+          })}>
 
-            </Route>
+          </Route>
           <Route>
             <h1>Page not found</h1>
           </Route>
         </Switch>
-    </Router>
+      </Router>
+    </UserProvider>
   );
 }
 
