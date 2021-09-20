@@ -31,13 +31,13 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 Create the user account and start messaging.
 
 ### Home page
-![Alt text](/react-ecompanion-app/pubicl/home.png?raw=true "Optional Title")
+![Alt text](https://github.com/sohaib-gujjar/ecompanion/blob/master/react-ecompanion-app/public/home.png "Optional Title")
 ### Dashboard
-![Alt text](/react-ecompanion-app/pubicl/dashboard.png?raw=true "Optional Title")
+![Alt text](https://github.com/sohaib-gujjar/ecompanion/blob/master/react-ecompanion-app/public/dashboard.png "Optional Title")
 ### Sign Up page
-![Alt text](/react-ecompanion-app/pubicl/register.png?raw=true "Optional Title")
+![Alt text](https://github.com/sohaib-gujjar/ecompanion/blob/master/react-ecompanion-app/public/register.png "Optional Title")
 ### Sign In page
-![Alt text](/react-ecompanion-app/pubicl/login.png?raw=true "Optional Title")
+![Alt text](https://github.com/sohaib-gujjar/ecompanion/blob/master/react-ecompanion-app/public/login.png?raw=true "Optional Title")
 
 
 ## Swagger Documentation
