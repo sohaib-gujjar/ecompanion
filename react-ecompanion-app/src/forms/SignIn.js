@@ -53,7 +53,7 @@ export default function Signin() {
         <div className="signup-form">
                 <h1>Login!</h1>
                 <Formik
-                    initialValues={{ email: 'sohaibakbar@gmx.de', remember: false, password: '12345678' }}
+                    initialValues={{ email: 'test@test.com', remember: false, password: '12345678' }}
                     validate={values => {
                         const errors = {};
                         if (!values.email) {

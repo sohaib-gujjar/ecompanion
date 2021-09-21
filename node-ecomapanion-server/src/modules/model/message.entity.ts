@@ -2,7 +2,9 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from "type
 import AbstractEntity from "./abstractEntity";
 import Reaction from "./attributes/reactions.entity";
 import File from "./file.entity";
+import Teams from "./team.entity";
 import { User } from "./user.entity";
+import Workspace from "./workspace.entity";
 
 
 @Entity()
@@ -12,11 +14,11 @@ export default class Message extends AbstractEntity {
     text: string;
 
 
-    @ManyToOne(type => Message, reply => reply.reply)
+    /*@ManyToOne(type => Message, reply => reply.reply)
     message: Message;
 
     @OneToMany(type => Message, message => message.message)
-    reply: Message[];
+    reply: Message[];*/
 
 
     @OneToOne(() => File, file => file.message)
@@ -24,8 +26,17 @@ export default class Message extends AbstractEntity {
     file: File;
 
 
-    @ManyToOne(() => User, user => user.messages)
+    @ManyToOne(() => User, user => user.messages, { nullable: false })
     user: User;
+
+    @ManyToOne(() => User)
+    toUser: User;
+
+    @ManyToOne(() => Workspace)
+    workspaceMessage: Workspace;
+
+    @ManyToOne(() => Teams)
+    teamsMessage: Teams;
 
     @OneToOne(() => Reaction, reaction => reaction.message)
     reaction: Reaction;
