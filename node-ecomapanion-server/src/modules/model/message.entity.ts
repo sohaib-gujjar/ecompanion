@@ -10,7 +10,7 @@ import Workspace from "./workspace.entity";
 @Entity()
 export default class Message extends AbstractEntity {
 
-    @Column()
+    @Column({ type: "text"})
     text: string;
 
 
@@ -29,10 +29,10 @@ export default class Message extends AbstractEntity {
     @ManyToOne(() => User, user => user.messages, { nullable: false })
     user: User;
 
-    @ManyToOne(() => User)
+    @ManyToOne(() => User, user => user.receivedMessages)
     toUser: User;
 
-    @ManyToOne(() => Workspace)
+    @ManyToOne(() => Workspace, ws => ws.message)
     workspaceMessage: Workspace;
 
     @ManyToOne(() => Teams)

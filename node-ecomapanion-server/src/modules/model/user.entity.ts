@@ -1,8 +1,9 @@
-import { Entity, Column, OneToOne, JoinColumn, OneToMany } from "typeorm";
+import { Entity, Column, OneToOne, JoinColumn, OneToMany, ManyToMany } from "typeorm";
 import { IsEmail, MaxLength, IsNotEmpty } from 'class-validator';
 import AbstractEntity from "./abstractEntity";
 import File from "./file.entity";
 import Message from "./message.entity";
+import Workspace from "./workspace.entity";
 
 @Entity()
 export class User extends AbstractEntity {
@@ -34,4 +35,10 @@ export class User extends AbstractEntity {
 
     @OneToMany(() => Message, messages => messages.user)
     messages: Message[];
+
+    @OneToMany(() => Message, messages => messages.toUser)
+    receivedMessages: Message[];
+
+    @ManyToMany(() => Workspace, ws => ws.users)
+    workspace: Workspace[];
 }

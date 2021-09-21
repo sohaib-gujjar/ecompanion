@@ -13,30 +13,119 @@ export default function Dashboard() {
     const context = useContext(UserContext);
 
 
+    const [contacts, setContacts] = useState([{ name: "Lorem ipsum", id: 1 }, { name: "Ipsum Lorem", id: 2 }]);
+    let [teamsJoined, setTeamsJoined] = useState([{ name: "Team 1", id: 1 }, { name: "Team2", id: 2 }]);
+    let [workspace, setWorkspace] = useState([{ name: "Channel 1", id: 1 }, { name: "Channel 2", id: 2 }]);
+
+    const [messages, setMessages] = useState([]);
+
+    /*************************************************         */
+    function getWorkspaces(user) {
+        fetch("http://localhost:3001/slack/getUserWorkspace/" + user, {
+            method: 'GET'
+        })
+            .then(response => response.json())
+            .then(res => {
+                setWorkspace(res)
+            })
+            .catch(err => {
+                console.log(err.message)
+                alert(err)
+            })
+    }
+    function getUserTeams(user) {
+        fetch("http://localhost:3001/slack/getUserTeams/" + user, {
+            method: 'GET'
+        })
+            .then(response => response.json())
+            .then(res => {
+                setTeamsJoined(res)
+            })
+            .catch(err => {
+                console.log(err.message)
+                alert(err)
+            })
+    }
+    function getUserDirectChats(user) {
+        fetch("http://localhost:3001/slack/getUserDirectChats/" + user, {
+            method: 'GET'
+        })
+            .then(response => response.json())
+            .then(res => {
+                setContacts(res)
+            })
+            .catch(err => {
+                console.log(err.message)
+                alert(err)
+            })
+    }
+    /**************************************************          */
+
+
     useEffect(() => {
         if (context) {
             console.log("getToken", context)
             if (context.user) {
                 setUser(user);
+
+                const current_user = context.user.user.email;
+
+                getWorkspaces(current_user)
+                getUserTeams(current_user)
+                getUserDirectChats(current_user)
+                
+                return;
+            }
+            else {
+                window.location.href = "/signin";
             }
         }
-        if (!user) {
-            //window.location.href = "/signin";
-        }
-    });
+        getWorkspaces("test@test.com")
+        getUserTeams("test@test.com")
+        getUserDirectChats("test@test.com")
+
+    }, []);
 
     function onContactChange(e, d) {
-        console.log(e, d);
+        const current_user = context.user.id;
+        fetch("http://localhost:3001/slack/" + current_user + "/" + d.id, {
+            method: 'GET'
+        })
+            .then(response => response.json())
+            .then(res => {
+                setMessages(res)
+            })
+            .catch(err => {
+                console.log(err.message)
+                alert(err)
+            })
     }
     function onTeamChange(e, d) {
-        console.log(e, d);
+        fetch("http://localhost:3001/slack/getTeamsChat/" + d.id, {
+            method: 'GET'
+        })
+            .then(response => response.json())
+            .then(res => {
+                setMessages(res)
+            })
+            .catch(err => {
+                console.log(err.message)
+                alert(err)
+            })
     }
     function onChannelChange(e, d) {
-        console.log(e, d);
+        fetch("http://localhost:3001/slack/getWorkspaceChat/" + d.id, {
+            method: 'GET'
+        })
+            .then(response => response.json())
+            .then(res => {
+                setMessages(res)
+            })
+            .catch(err => {
+                console.log(err.message)
+                alert(err)
+            })
     }
-    let contacts = [{ name: "Lorem ipsum", id: 1 }, { name: "Ipsum Lorem", id: 2 }];
-    let teamsJoined = [{ name: "Team 1", id: 1 }, { name: "Team2", id: 2 }];
-    let channelJoined = [{ name: "Channel 1", id: 1 }, { name: "Channel 2", id: 2 }];
 
     return (
         <Container className="slack-window" >
@@ -47,7 +136,7 @@ export default function Dashboard() {
                 <Col sm={3} md={3} lg={3} className="slack-user-window">
                     <TeamsAndContacts
                         contacts={contacts}
-                        channelJoined={channelJoined}
+                        channelJoined={workspace}
                         teamsJoined={teamsJoined}
                         onTeamChange={onTeamChange}
                         onChannelChange={onChannelChange}
@@ -55,7 +144,7 @@ export default function Dashboard() {
                     />
                 </Col>
                 <Col sm={9} md={9} lg={9} className="slack-body">
-                    <ChatPanel />
+                    <ChatPanel chats={messages} />
                     <ChatFooterPanel />
                 </Col>
             </Row>
@@ -68,6 +157,14 @@ function TeamsAndContacts({ teamsJoined, channelJoined, contacts, onContactChang
     return (
         <>
             <div className="team-name">
+                <span>Workspace</span>
+                <div >
+                    {_.map(channelJoined, (data, i) => {
+                        return <span key={"channel" + i} onClick={(e) => onChannelChange(e, data)}>{data.name}</span>
+                    })}
+                </div>
+            </div>
+            <div className="team-name">
                 <span>Team Name</span>
                 <div >
                     {_.map(teamsJoined, (data, i) => {
@@ -76,24 +173,16 @@ function TeamsAndContacts({ teamsJoined, channelJoined, contacts, onContactChang
                 </div>
             </div>
             <div className="team-name">
-                <span>Channels</span>
-                <div >
-                    {_.map(channelJoined, (data, i) => {
-                        return <span key={"channel" + i} onClick={(e) => onChannelChange(e, data)}>{data.name}</span>
-                    })}
-                </div>
-            </div>
-            <div className="team-name">
                 <span>Direct message</span>
                 <div >
                     {_.map(contacts, (data, i) => {
-                        return <span key={"dm" + i} onClick={(e) => onContactChange(e, data)}>{data.name}</span>
+                        return <span key={"dm" + i} onClick={(e) => onContactChange(e, data)}>{data.firstName + ' ' + data.lastName}</span>
                     })}
                 </div>
             </div>
 
 
-        <div>
+            {/*<div>
             
             <div class="emoji emoji--like">
                 <div class="emoji__hand">
@@ -118,7 +207,7 @@ function TeamsAndContacts({ teamsJoined, channelJoined, contacts, onContactChang
                     </div>
                 </div>
             </div>
-                </div>
+                </div>*/}
         </>
     );
 }
@@ -127,64 +216,63 @@ function TeamsAndContacts({ teamsJoined, channelJoined, contacts, onContactChang
 function ChatFooterPanel() {
     return (
         <>
-        <Row className="chat-panel-footer">
-            <Col sm={1}>
-                <span className="chat-icon">
-                    <svg version="1.1" viewBox="0 0 100 100">
-                        <g>
-                            <path d="m83.898 77.398c-2.3984-13-13.699-22.5-26.898-22.5h-13.699c-13.5 0-24.898 9.8008-27.102 23.102-1.1016 6.6992 4.1016 12.699 10.801 12.699h46.199c6.8008 0 12-6.1992 10.801-12.898z"></path>
-                            <path d="m36.102 44.199c7.8008 7.8008 20.398 8 28.398 0.39844l0.19922-0.19922c6.8984-6.6016 7.6016-17.301 1.5-24.699-8.3008-10-23.699-9.8008-31.699 0.39844-5.6016 7.1992-5 17.5 1.5 24z"></path>
-                        </g>
-                    </svg>
-                </span>
-            </Col>
-            <Col sm={11}>
-                <Row>
-                    <Col sm={10}>
-                        <input id="btn-input" type="text" className="form-control input-sm" placeholder="Type your message here..." />
-                    </Col>
-                    <Col sm={2}>
-                        <Button variant="outline-danger">Send</Button>
+            <Row className="chat-panel-footer">
+                <Col sm={1}>
+                    <span className="chat-icon">
+                        <svg version="1.1" viewBox="0 0 100 100">
+                            <g>
+                                <path d="m83.898 77.398c-2.3984-13-13.699-22.5-26.898-22.5h-13.699c-13.5 0-24.898 9.8008-27.102 23.102-1.1016 6.6992 4.1016 12.699 10.801 12.699h46.199c6.8008 0 12-6.1992 10.801-12.898z"></path>
+                                <path d="m36.102 44.199c7.8008 7.8008 20.398 8 28.398 0.39844l0.19922-0.19922c6.8984-6.6016 7.6016-17.301 1.5-24.699-8.3008-10-23.699-9.8008-31.699 0.39844-5.6016 7.1992-5 17.5 1.5 24z"></path>
+                            </g>
+                        </svg>
+                    </span>
+                </Col>
+                <Col sm={11}>
+                    <Row>
+                        <Col sm={10}>
+                            <input id="btn-input" type="text" className="form-control input-sm" placeholder="Type your message here..." />
+                        </Col>
+                        <Col sm={2}>
+                            <Button variant="outline-danger">Send</Button>
 
-                    </Col>
-                </Row>
-            </Col>
-        </Row>
+                        </Col>
+                    </Row>
+                </Col>
+            </Row>
         </>
     );
 }
 
-function ChatPanel() {
+function ChatPanel({ chats }) {
     return (
         <div className="panel-body">
-            <Chat></Chat>
-            <ChatReply />
-            <Chat></Chat>
-            <ChatReply />
-            <Chat></Chat>
-            <ChatReply />
+            {
+                _.map(chats, (chat, i) => {
+                    return <Chat chat={chat} />
+                })
+            }
         </div>
     );
 }
 
 
-function Chat() {
+function Chat({ chat }) {
+
+    const context = useContext(UserContext);
     return (
-        <Container className="chat">
+        <Container className={chat.user.email == (context.user.user.email || "") ? "chat reply" : "chat"}>
             <Row>
                 <Col sm={1}>
-                    <div className="img-circle"><span>BP</span></div>
+                    <div className="img-circle"><span>{chat.user.firstName.substr(0, 1).toUpperCase() + '' + chat.user.lastName.substr(0, 1).toUpperCase()}</span></div>
                 </Col>
                 <Col sm={10}>
-                    <p><strong className="">Lorem ipsum</strong></p>
-                    <p><small className="time-status"><span className="status active"></span>15 mins ago</small></p>
+                    <p><strong className="">{chat.user.firstName + ' ' + chat.user.lastName}</strong></p>
+                    <p><small className="time-status"><span className="status active"></span>{timeSince(chat.createdAt)}</small></p>
                 </Col>
             </Row>
             <Row style={{ padding: "2% 0", margin: "0", color: "#545454" }}>
                 <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare
-                    dolor, quis ullamcorper ligula sodales. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare
-                    dolor, quis ullamcorper ligula sodales.
+                    {chat.text}
                 </p>
 
             </Row>
@@ -193,26 +281,31 @@ function Chat() {
 }
 
 
-function ChatReply() {
-    return (
-        <Container className="chat reply">
-            <Row>
-                <Col sm={1}>
-                    <div className="img-circle"><span>ME</span></div>
-                </Col>
-                <Col sm={10}>
-                    <p><strong className="">Lorem ipsum</strong></p>
-                    <p><small className="time-status"><span className="status active"></span>15 mins ago</small></p>
-                </Col>
-            </Row>
-            <Row style={{ padding: "2% 0", margin: "0", color: "#545454" }}>
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare
-                    dolor, quis ullamcorper ligula sodales. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare
-                    dolor, quis ullamcorper ligula sodales.
-                </p>
+function timeSince(date) {
 
-            </Row>
-        </Container>
-    );
+    var seconds = Math.floor((new Date() - new Date(date)) / 1000);
+
+
+    var interval = seconds / 31536000;
+
+    if (interval > 1) {
+        return Math.floor(interval) + " years";
+    }
+    interval = seconds / 2592000;
+    if (interval > 1) {
+        return Math.floor(interval) + " months";
+    }
+    interval = seconds / 86400;
+    if (interval > 1) {
+        return Math.floor(interval) + " days";
+    }
+    interval = seconds / 3600;
+    if (interval > 1) {
+        return Math.floor(interval) + " hours";
+    }
+    interval = seconds / 60;
+    if (interval > 1) {
+        return Math.floor(interval) + " minutes";
+    }
+    return Math.floor(seconds) + " seconds";
 }

@@ -24,7 +24,7 @@ AuthRouter.post(`${path}/login`, validateDTO(LoginDTO), async (req: Request, res
 
         try {
           const token = jwt.sign(
-            { id: user.email, user: { firstname: user.firstName, lastname: user.lastName}, exp: 60000, },
+            { id: user.email, user: { id: user.id, firstname: user.firstName, lastname: user.lastName, email: user.email}, exp: 60000, },
             process.env.TOKEN_KEY
           );
   

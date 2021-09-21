@@ -1,5 +1,6 @@
 import { Column, Entity, JoinTable, ManyToMany, OneToMany } from "typeorm";
 import AbstractEntity from "./abstractEntity";
+import Message from "./message.entity";
 import Teams from "./team.entity";
 import { User } from "./user.entity";
 
@@ -17,4 +18,7 @@ export default class Workspace extends AbstractEntity {
     @ManyToMany(() => User, { cascade: true })
     @JoinTable()
     users: User[];
+
+    @OneToMany(type => Message, message => message.workspaceMessage)
+    message: Message[];
 }

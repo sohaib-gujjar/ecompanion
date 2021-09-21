@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 
 export default function authorizationMiddleware(req: any, res: any, next: any) {
 
-    if(req.originalUrl.startsWith('/auth/')) {return next();}
+    if(req.originalUrl.startsWith('/auth/') || req.originalUrl.startsWith('/slack/')) {return next();}
 
     console.log("session", req.session, req.session.token);
     
