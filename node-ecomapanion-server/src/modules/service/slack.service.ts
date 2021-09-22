@@ -1,4 +1,7 @@
 import { getConnection, getManager } from "typeorm";
+import CreateTeamsMessageDTO from "../dto/create-teams-message.dto";
+import CreateUserMessageDTO from "../dto/create-user-message.dto";
+import CreateWorkSpaceMessageDTO from "../dto/create-workspace-message.dto";
 import Message from "../model/message.entity";
 import Teams from "../model/team.entity";
 import { User } from "../model/user.entity";
@@ -141,10 +144,93 @@ export default class SlackService {
         });
     }
 
-    public async create (data: any): Promise<any> {
+    public async createUserMessage (data: CreateUserMessageDTO): Promise<any> {
         return new Promise<any>(async (resolve, reject) => {
             try {
-               resolve(data);
+
+                getManager().getRepository(User).findOne(data.sender.id)
+                    .then(user => {
+                      if(user) {
+                        getManager().getRepository(User).findOne(data.receiver.id)
+                            .then( receiver=> {
+                                if( receiver) {
+                                    let message = new Message();
+                                    message.user = user;
+                                    message.toUser = receiver;
+                                    message.text = data.text;
+
+                                    getManager().getRepository(Message).insert(message)
+                                        .then (res => resolve(res))
+                                        .catch(err => reject(err))
+                                        
+                                }
+                                else reject("Receiver not found")
+                            })
+                      }
+                      else reject("User not found")
+                    })
+
+            } catch (error) {
+                reject(error)
+            }
+        });
+    };
+
+    public async createTeamsMessage (data: CreateTeamsMessageDTO): Promise<any> {
+        return new Promise<any>(async (resolve, reject) => {
+            try {
+                getManager().getRepository(User).findOne(data.user.id)
+                .then(user => {
+                  if(user) {
+                    getManager().getRepository(Teams).findOne(data.teams.id)
+                        .then( team=> {
+                            if( team) {
+                                let message = new Message();
+                                message.user = user;
+                                message.teamsMessage = team;
+                                message.text = data.text;
+
+                                getManager().getRepository(Message).insert(message)
+                                    .then (res => resolve(res))
+                                    .catch(err => reject(err))
+                                    
+                            }
+                            else reject("Team not found")
+                        })
+                  }
+                  else reject("User not found")
+                })
+
+            } catch (error) {
+                reject(error)
+            }
+        });
+    };
+
+    public async createWorkspaceMessage (data: CreateWorkSpaceMessageDTO): Promise<any> {
+        return new Promise<any>(async (resolve, reject) => {
+            try {
+                getManager().getRepository(User).findOne(data.user.id)
+                    .then(user => {
+                      if(user) {
+                        getManager().getRepository(Workspace).findOne(data.workspace.id)
+                            .then( workspace=> {
+                                if( workspace) {
+                                    let message = new Message();
+                                    message.user = user;
+                                    message.workspaceMessage = workspace;
+                                    message.text = data.text;
+
+                                    getManager().getRepository(Message).insert(message)
+                                        .then (res => resolve(res))
+                                        .catch(err => reject(err))
+                                        
+                                }
+                                else reject("Receiver not found")
+                            })
+                      }
+                      else reject("User not found")
+                    })
 
             } catch (error) {
                 reject(error)

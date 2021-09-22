@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Col, Container, Row, Button } from "react-bootstrap";
 import Header from "../component/Header";
 import '../styles/dashboard.scss';
@@ -8,8 +8,6 @@ import '../styles/emoji.scss';
 
 export default function Dashboard() {
 
-    const [user, setUser] = useState(null);
-
     const context = useContext(UserContext);
 
 
@@ -17,10 +15,10 @@ export default function Dashboard() {
     let [teamsJoined, setTeamsJoined] = useState([{ name: "Team 1", id: 1 }, { name: "Team2", id: 2 }]);
     let [workspace, setWorkspace] = useState([{ name: "Channel 1", id: 1 }, { name: "Channel 2", id: 2 }]);
 
-    const [messages, setMessages] = useState([]);
+    const [messages, setMessages] = useState({});
 
     /*************************************************         */
-    function getWorkspaces(user) {
+    const getWorkspaces = useCallback(async (user) => {
         fetch("http://localhost:3001/slack/getUserWorkspace/" + user, {
             method: 'GET'
         })
@@ -32,8 +30,9 @@ export default function Dashboard() {
                 console.log(err.message)
                 alert(err)
             })
-    }
-    function getUserTeams(user) {
+    }, [])
+
+    const getUserTeams = (user) => {
         fetch("http://localhost:3001/slack/getUserTeams/" + user, {
             method: 'GET'
         })
@@ -46,7 +45,7 @@ export default function Dashboard() {
                 alert(err)
             })
     }
-    function getUserDirectChats(user) {
+    const getUserDirectChats = (user) => {
         fetch("http://localhost:3001/slack/getUserDirectChats/" + user, {
             method: 'GET'
         })
@@ -64,36 +63,30 @@ export default function Dashboard() {
 
     useEffect(() => {
         if (context) {
-            console.log("getToken", context)
             if (context.user) {
-                setUser(user);
-
                 const current_user = context.user.user.email;
 
                 getWorkspaces(current_user)
                 getUserTeams(current_user)
                 getUserDirectChats(current_user)
-                
+
                 return;
             }
             else {
                 window.location.href = "/signin";
             }
         }
-        getWorkspaces("test@test.com")
-        getUserTeams("test@test.com")
-        getUserDirectChats("test@test.com")
 
     }, []);
 
     function onContactChange(e, d) {
-        const current_user = context.user.id;
-        fetch("http://localhost:3001/slack/" + current_user + "/" + d.id, {
+        const current_user = context.user.user.id;
+        fetch("http://localhost:3001/slack/getDM/" + current_user + "/" + d.id, {
             method: 'GET'
         })
             .then(response => response.json())
             .then(res => {
-                setMessages(res)
+                setMessages({ contact: d, messages: res })
             })
             .catch(err => {
                 console.log(err.message)
@@ -106,7 +99,7 @@ export default function Dashboard() {
         })
             .then(response => response.json())
             .then(res => {
-                setMessages(res)
+                setMessages({ team: d, messages: res })
             })
             .catch(err => {
                 console.log(err.message)
@@ -119,13 +112,103 @@ export default function Dashboard() {
         })
             .then(response => response.json())
             .then(res => {
-                setMessages(res)
+                setMessages({ workspace: d, messages: res })
             })
             .catch(err => {
                 console.log(err.message)
                 alert(err)
             })
     }
+
+    /*************************************************         */
+
+    const sendMessage = useCallback(async (message, text) => {
+        if (message.contact) {
+            const body = {
+                text: text,
+                sender: context.user.user,
+                receiver: message.contact
+            }
+            sendDirectMessage(body)
+        }
+        else if (message.team) {
+            const body = {
+                text: text,
+                user: context.user.user,
+                teams: message.team
+            }
+            sendTeamsMessage(body)
+        }
+        else if (message.workspace) {
+            const body = {
+                text: text,
+                user: context.user.user,
+                workspace: message.workspace
+            }
+            sendWorkspaceMessage(body);
+        }
+    })
+
+
+    const sendWorkspaceMessage = useCallback(async (body) => {
+        fetch("http://localhost:3001/slack/workspaceMessage", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        })
+            .then(response => { if (response.status == 200) { response.json() } else throw response.json() })
+            .then(res => {
+                onChannelChange(null, body.workspace)
+            })
+            .catch(err => {
+                console.log(err.message)
+                alert(err)
+            })
+    }, [])
+
+    const sendTeamsMessage = (body) => {
+        fetch("http://localhost:3001/slack/teamsMessage", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        })
+            .then(response => { if (response.status == 200) { response.json() } else throw response.json() })
+            .then(res => {
+                onTeamChange(null, body.teams)
+            })
+            .catch(err => {
+                console.log(err.message)
+                alert(err)
+            })
+    }
+    const sendDirectMessage = (body) => {
+        fetch("http://localhost:3001/slack/userMessage", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        })
+            .then(response => { if (response.status == 200) { response.json() } else throw response })
+            .then(res => {
+                /*let message = _.clone(messages);
+                message.messages.push({
+
+                })
+                setMessages(message)*/
+                onContactChange(null, body.receiver)
+
+            })
+            .catch(err => {
+                console.log(err)
+                alert(err)
+            })
+    }
+    /**************************************************          */
 
     return (
         <Container className="slack-window" >
@@ -145,7 +228,7 @@ export default function Dashboard() {
                 </Col>
                 <Col sm={9} md={9} lg={9} className="slack-body">
                     <ChatPanel chats={messages} />
-                    <ChatFooterPanel />
+                    <ChatFooterPanel message={messages} onSend={sendMessage} />
                 </Col>
             </Row>
         </Container>
@@ -213,27 +296,32 @@ function TeamsAndContacts({ teamsJoined, channelJoined, contacts, onContactChang
 }
 
 
-function ChatFooterPanel() {
+function ChatFooterPanel({ message, onSend }) {
+
+    const context = useContext(UserContext);
+    const inputRef = useRef(null);
+
+    let placeholder = message.workspace ? "Workspace: " + message.workspace.name : (message.team ? "Team: " + message.team.name : (message.contact ? "To :" + message.contact.email : ""));
+
+    useEffect(() => {
+        inputRef.current.value = ""
+    }, [])
+
     return (
         <>
-            <Row className="chat-panel-footer">
+            <Row className="chat-panel-footer chat">
                 <Col sm={1}>
-                    <span className="chat-icon">
-                        <svg version="1.1" viewBox="0 0 100 100">
-                            <g>
-                                <path d="m83.898 77.398c-2.3984-13-13.699-22.5-26.898-22.5h-13.699c-13.5 0-24.898 9.8008-27.102 23.102-1.1016 6.6992 4.1016 12.699 10.801 12.699h46.199c6.8008 0 12-6.1992 10.801-12.898z"></path>
-                                <path d="m36.102 44.199c7.8008 7.8008 20.398 8 28.398 0.39844l0.19922-0.19922c6.8984-6.6016 7.6016-17.301 1.5-24.699-8.3008-10-23.699-9.8008-31.699 0.39844-5.6016 7.1992-5 17.5 1.5 24z"></path>
-                            </g>
-                        </svg>
-                    </span>
+                    <div className="img-circle" style={{ backgroundColor: "yellow", width: "60px", height: "60px", display: "inline-block", borderRadius: "50%", textAlign: "center", alignSelf: "center", paddingTop: "18px" }}>
+                        <span>{context.user ? context.user.user.firstName.substr(0, 1).toUpperCase() + '' + context.user.user.lastName.substr(0, 1).toUpperCase() : ""}</span>
+                    </div>
                 </Col>
                 <Col sm={11}>
                     <Row>
                         <Col sm={10}>
-                            <input id="btn-input" type="text" className="form-control input-sm" placeholder="Type your message here..." />
+                            <textarea ref={inputRef} id="btn-input" type="textarea" row="5" className="form-control input-sm" placeholder={placeholder} />
                         </Col>
                         <Col sm={2}>
-                            <Button variant="outline-danger">Send</Button>
+                            <Button variant="outline-danger" onClick={() => { if (inputRef.current.value == "" || !message.messages) { alert("Error") } else { onSend(message, inputRef.current.value); inputRef.current.value = ""; } }}>Send</Button>
 
                         </Col>
                     </Row>
@@ -246,9 +334,10 @@ function ChatFooterPanel() {
 function ChatPanel({ chats }) {
     return (
         <div className="panel-body">
+            <div style={{ float: "right", fontSize: "xx-small" }}>{chats.workspace ? <span>Workspace: {chats.workspace.name}</span> : (chats.team ? <span>Team: {chats.team.name}</span> : (chats.contact ? <span>User: {chats.contact.email}</span> : null))}</div>
             {
-                _.map(chats, (chat, i) => {
-                    return <Chat chat={chat} />
+                _.map(chats.messages, (chat, i) => {
+                    return <Chat key={'chat' + i} chat={chat} />
                 })
             }
         </div>

@@ -43,10 +43,10 @@ export default class Header extends React.Component {
           <Container>
             <Row>
               <Col sm={4} md={4} lg={4} className="icon">
-                <a href="/">
+                <Link to="/">
                   <img src="favicon.ico" alt=""></img>
                   <span className="app-title">E Companion</span>
-                </a>
+                </Link>
               </Col>
               <Col sm={8} md={8} lg={8} style={{ alignSelf: "center"}}>
                 <nav className="App-header-nav">

@@ -1,20 +1,16 @@
-import { IsEmail, IsString, MinLength } from "class-validator";
+import { IsEmail, IsString } from "class-validator";
 
-export default class CreateUserDto {
-  
-  @IsString()
-  public firstName?: string;
+export default class UserDTO {
 
-  @IsString()
-  public lastName: string;
+    @IsString()
+    public id: string;
 
-  @IsEmail({}, { message: "Provided Email is not valid" })
-  public email: string;
+    @IsString()
+    public firstName?: string;
 
-  @IsString()
-  @MinLength(8, { message: "Password should be minimum of 8 characters" })
-  public password: string;
+    @IsString()
+    public lastName: string;
 
-  @IsString()
-  public description: string;
+    @IsEmail({}, { message: "Provided Email is not valid" })
+    public email: string;
 }

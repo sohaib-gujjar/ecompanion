@@ -17,6 +17,7 @@ Server (RestApis) is developed using ExpressJS framework and UI is developed in 
     -   Dashboard to see chats and send messages, 
     -   SignUp form
     -   SignIn form
+    -   Forms validation
     -   Create react components using classes and hooks
     -   React Context
     -   React Bootsrap & Saas styling (style variables ...)

@@ -1,4 +1,9 @@
+import { plainToClass } from 'class-transformer';
 import * as express from 'express';
+import validateDTO from '../../@base/middleware/validateDTO.middleware';
+import CreateTeamsMessageDTO from '../dto/create-teams-message.dto';
+import CreateUserMessageDTO from '../dto/create-user-message.dto';
+import CreateWorkSpaceMessageDTO from '../dto/create-workspace-message.dto';
 import SlackService from '../service/slack.service';
 
 export default class SlackController {
@@ -25,9 +30,9 @@ export default class SlackController {
         this.router.get(`${this.path}/getTeamsChat/:id`, this.getTeamsChat);
         this.router.get(`${this.path}/getDM/:fromId/:toId`, this.getDM);
         
-        this.router.post(`${this.path}/message`, this.create);
-        this.router.post(`${this.path}/message/team`, this.create);
-        this.router.post(`${this.path}/message/workspace`, this.create);
+        this.router.post(`${this.path}/userMessage`, validateDTO(CreateUserMessageDTO), this.userMessage);
+        this.router.post(`${this.path}/teamsMessage`, validateDTO(CreateTeamsMessageDTO), this.teamsMessage);
+        this.router.post(`${this.path}/workspaceMessage`, validateDTO(CreateWorkSpaceMessageDTO), this.workspaceMessage);
     }
 
     getUserWorkspace = async (req: express.Request, res: express.Response) => {
@@ -91,10 +96,32 @@ export default class SlackController {
         }
     }
 
-    create = async (req: express.Request, res: express.Response) => {
+    userMessage = async (req: express.Request, res: express.Response) => {
         try {
-            const body = req.body;
-            res.status(200).send(body);
+            console.log(req.body)
+            const dto: CreateUserMessageDTO = plainToClass(CreateUserMessageDTO, req.body);
+            let results = await this.service.createUserMessage(dto);
+            res.status(200).send(results);
+        } catch (e) {
+            res.status(500).send(e.message);
+        }
+    }
+
+    teamsMessage = async (req: express.Request, res: express.Response) => {
+        try {
+            const dto: CreateTeamsMessageDTO = plainToClass(CreateTeamsMessageDTO, req.body);
+            let results = await this.service.createTeamsMessage(dto);
+            res.status(200).send(results);
+        } catch (e) {
+            res.status(500).send(e.message);
+        }
+    }
+
+    workspaceMessage = async (req: express.Request, res: express.Response) => {
+        try {
+            const dto: CreateWorkSpaceMessageDTO = plainToClass(CreateWorkSpaceMessageDTO, req.body);
+            let results = await this.service.createWorkspaceMessage(dto);
+            res.status(200).send(results);
         } catch (e) {
             res.status(500).send(e.message);
         }

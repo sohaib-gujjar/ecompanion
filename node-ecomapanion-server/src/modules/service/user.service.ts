@@ -1,5 +1,5 @@
 import { getManager } from "typeorm";
-import CreateUserDto from "../dto/user.dto";
+import CreateUserDto from "../dto/create-user.dto";
 import { User } from "../model/user.entity";
 
 /**
