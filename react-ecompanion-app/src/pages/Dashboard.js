@@ -241,56 +241,35 @@ function TeamsAndContacts({ teamsJoined, channelJoined, contacts, onContactChang
         <>
             <div className="team-name">
                 <span>Workspace</span>
-                <div >
+                <div className="list">
                     {_.map(channelJoined, (data, i) => {
-                        return <span key={"channel" + i} onClick={(e) => onChannelChange(e, data)}>{data.name}</span>
+                        return <span className="list-item" key={"channel" + i} onClick={(e) => onChannelChange(e, data)}>#&nbsp;&nbsp;{data.name}</span>
                     })}
                 </div>
             </div>
             <div className="team-name">
                 <span>Team Name</span>
-                <div >
+                <div className="list">
                     {_.map(teamsJoined, (data, i) => {
-                        return <span key={"tname" + i} onClick={(e) => onTeamChange(e, data)}>{data.name}</span>
+                        return <span className="list-item" key={"tname" + i} onClick={(e) => onTeamChange(e, data)}>#&nbsp;&nbsp;{data.name}</span>
                     })}
                 </div>
             </div>
             <div className="team-name">
                 <span>Direct message</span>
-                <div >
+                <div className="list">
                     {_.map(contacts, (data, i) => {
-                        return <span key={"dm" + i} onClick={(e) => onContactChange(e, data)}>{data.firstName + ' ' + data.lastName}</span>
+                        return (
+                            <div key={"dm" + i} style={{ display: "block"}}>
+                                <span className="status"/>
+                                <span className="list-item" onClick={(e) => onContactChange(e, data)}>
+                                    {data.firstName + ' ' + data.lastName}
+                                </span>
+                            </div>
+                        )
                     })}
                 </div>
             </div>
-
-
-            {/*<div>
-            
-            <div class="emoji emoji--like">
-                <div class="emoji__hand">
-                    <div class="emoji__thumb">
-                    </div>
-                </div>
-            </div>
-            
-            <div class="emoji emoji--love">
-                <div class="emoji__heart">
-                </div>
-            </div>
-            
-            <div class="emoji emoji--wow">
-                <div class="emoji__face">
-                    <div
-                        class="emoji__eyebrows">
-                    </div>
-                    <div class="emoji__eyes">
-                    </div>
-                    <div class="emoji__mouth">
-                    </div>
-                </div>
-            </div>
-                </div>*/}
         </>
     );
 }
@@ -302,6 +281,7 @@ function ChatFooterPanel({ message, onSend }) {
     const inputRef = useRef(null);
 
     let placeholder = message.workspace ? "Workspace: " + message.workspace.name : (message.team ? "Team: " + message.team.name : (message.contact ? "To :" + message.contact.email : ""));
+    let defaultValue = "";
 
     useEffect(() => {
         inputRef.current.value = ""
@@ -309,18 +289,18 @@ function ChatFooterPanel({ message, onSend }) {
 
     return (
         <>
-            <Row className="chat-panel-footer chat">
+            <Row className="chat-panel-footer">
                 <Col sm={1}>
-                    <div className="img-circle" style={{ backgroundColor: "yellow", width: "60px", height: "60px", display: "inline-block", borderRadius: "50%", textAlign: "center", alignSelf: "center", paddingTop: "18px" }}>
+                    <div className="chat-icon">
                         <span>{context.user ? context.user.user.firstName.substr(0, 1).toUpperCase() + '' + context.user.user.lastName.substr(0, 1).toUpperCase() : ""}</span>
                     </div>
                 </Col>
                 <Col sm={11}>
                     <Row>
-                        <Col sm={10}>
-                            <textarea ref={inputRef} id="btn-input" type="textarea" row="5" className="form-control input-sm" placeholder={placeholder} />
+                        <Col sm={11}>
+                            <textarea ref={inputRef} id="btn-input" type="textarea" rows="3" className="form-control input-sm" placeholder={placeholder} />
                         </Col>
-                        <Col sm={2}>
+                        <Col sm={1}>
                             <Button variant="outline-danger" onClick={() => { if (inputRef.current.value == "" || !message.messages) { alert("Error") } else { onSend(message, inputRef.current.value); inputRef.current.value = ""; } }}>Send</Button>
 
                         </Col>

@@ -38,14 +38,23 @@
     font-size: 1rem;
     margin-top: 4%;
 
-    div {
+    .list {
       margin-top: 4%;
       color: lightgray;
       padding-left: 5%;
       display: flex;
       flex-direction: column;
 
-      span {
+      .status {
+        background-color: transparent;
+        border: 2px gray solid;
+        border-radius: 50%;
+        width: 10px;
+        height: 10px;
+        display: inline-block;
+      }
+
+      .list-item {
         font-weight: 500;
         padding: 5px;
         cursor: pointer;
@@ -66,11 +75,29 @@
   background-color: #fafafa;
 
   .panel-body {
-    margin: 5%;
+    margin: 1% 5%;
     overflow: auto;
-    min-height: 60vh;
-    max-height: 65vh;
+    min-height: 70vh;
+    max-height: 70vh;
     padding: 2%;
+    box-shadow: 2px 2px 5px 1px rgba(0,0,0,0.1);
+
+    &::-webkit-scrollbar-track
+    {
+      -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+      background-color: #F5F5F5;
+    }
+
+    &::-webkit-scrollbar
+    {
+      width: 6px;
+      background-color: #F5F5F5;
+    }
+
+    &::-webkit-scrollbar-thumb
+    {
+      background-color: gray;
+    }
 
     .chat
     {
@@ -88,13 +115,13 @@
         }
         .img-circle {
           background-color: greenyellow;
-          width: 60px;
-          height: 60px;
+          width: 50px;
+          height: 50px;
           display: inline-block;
           border-radius: 50%;
           text-align: center;
           align-self: center;
-          padding-top: 18px;
+          padding-top: 13px;
         }
 
         .time-status {
@@ -114,24 +141,27 @@
     }
 
     .reply {
-      padding-left: 5%;
+      padding-left: 1%;
 
       .img-circle {
-        background-color: grey;
+        background-color: lightgray;
       }
     }
   }
 
   .chat-panel-footer {
-    margin: 5%;
+    margin: 3% 5% 0 5%;
+    align-items: center;
 
     .chat-icon {
-      margin: 0;
-      border: 1px lightgray solid;
-      border-radius: 25px;
-      position: absolute;
-      width: 45px;
-      height: 45px;
+          background-color: rgba(93, 136, 236, 0.1);
+          width: 45px;
+          height: 45px;
+          display: inline-block;
+          border-radius: 50%;
+          text-align: center;
+          align-self: center;
+          padding-top: 12px;
 
     }
 

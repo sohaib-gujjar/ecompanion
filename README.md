@@ -1,26 +1,27 @@
 # Team Messenger App (Slack Clone)
 
 An example project, to connect with friends and colleagues. It contains both server side and client side modules.
-Server (RestApis) is developed using ExpressJS framework and UI is developed in React. Main features of node and react app are
+Server (RestApis) is developed using ExpressJS framework and UI is developed in React. Main features of app are
 
 - Backend
     -   Rest endpoints
+    -   Persistance storage in MySQL
+    -   Object Relational Mapping by TypeORM
     -   Database migrations
     -   Data validation
-    -   Persistance storage in MySQL
-    -   Typeorm for Object Relational Mapping and querying data
     -   User authentication
     -   Exception handling middleware
     -   Swagger Documentation
+    -   Jest - JavaScript Testing Framework ..
 - Frontend UI
-    -   Home page
-    -   Dashboard to see chats and send messages, 
-    -   SignUp form
-    -   SignIn form
     -   Forms validation
     -   Create react components using classes and hooks
     -   React Context
-    -   React Bootsrap & Saas styling (style variables ...)
+    -   React Bootstrap & Saas styling (style variables ...)
+    -   Home page
+    -   Dashboard to see chats and send messages, 
+    -   Registration form
+    -   SignIn form
     
 ### Getting started
 
@@ -39,7 +40,7 @@ cd  node-ecomapanion-server/
 - npm run migrate:run
 - npm run start
 ```
--   In the fronend and backend directory, you can run: `npm run start` to run the app in the development mode.
+-   In the frontend and backend directory, you can run: `npm run start` to run the app in the development mode.
 -   Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 -   Create the user account and start messaging.
 

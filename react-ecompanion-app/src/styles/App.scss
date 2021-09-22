@@ -125,12 +125,17 @@
     text-transform: uppercase;
     color: #afafaf;
     text-decoration: none;
+    padding: 5px;
 
     .user-avatar {
-      border: 1px lightblue solid;
+      border: 1px darkgray solid;
       border-radius: 50%;
       padding: 2px 5px;
-      margin-right: 2%;
+      margin-right: 5%;
+      min-width: 30px;
+      min-height: 30px;
+      display: inline-block;
+      color: gray;
     }
   }
 }
