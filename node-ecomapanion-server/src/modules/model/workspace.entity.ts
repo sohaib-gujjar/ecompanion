@@ -15,7 +15,7 @@ export default class Workspace extends AbstractEntity {
     teams: Teams[];
 
 
-    @ManyToMany(() => User, { cascade: true })
+    @ManyToMany(() => User, users => users.workspace, { cascade: true })
     @JoinTable()
     users: User[];
 

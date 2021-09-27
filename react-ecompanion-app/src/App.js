@@ -7,6 +7,7 @@ import Setting from "./pages/Setting";
 import './styles/App.scss';
 import {  useState } from "react";
 import { UserProvider } from "./context/UserContext";
+import Profile from "./pages/Profile";
 
 function App() {
 
@@ -27,6 +28,9 @@ function App() {
           </Route>
           <Route path="/signin">
             <SignIN />
+          </Route>
+          <Route path="/profile">
+            <Profile />
           </Route>
           <Route path="/setting">
             <Setting />

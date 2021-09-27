@@ -4,6 +4,7 @@ import AbstractEntity from "./abstractEntity";
 import File from "./file.entity";
 import Message from "./message.entity";
 import Workspace from "./workspace.entity";
+import Teams from "./team.entity";
 
 @Entity()
 export class User extends AbstractEntity {
@@ -41,4 +42,7 @@ export class User extends AbstractEntity {
 
     @ManyToMany(() => Workspace, ws => ws.users)
     workspace: Workspace[];
+
+    @ManyToMany(() => Teams, teams => teams.users)
+    teams: Teams[];
 }

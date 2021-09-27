@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Formik, Form } from "formik";
-import { DateInput, DropDownInput, RadioGroup, TermsConditions, TextAreaInput, TextInput } from "../component/formikComponents";
-import { ImageUploader } from "../component/formikComponents/ImageUploader";
+import { DateInput, DropDownInput, ImageUploader, RadioGroup, TermsConditions, TextAreaInput, TextInput } from "../component/formikComponents";
 
 export default class SignUp extends Component {
 
@@ -51,10 +50,10 @@ export default class SignUp extends Component {
                         description: '', 
                         password: '', 
                         icon: null,
-                        gender: '', 
+                        gender: null, 
                         tags: [],
                         terms: false, 
-                        channel: [{id: "female", label: "Female"},{id: "male", label: "Male"}],
+                        workspace: null,
                         dob: "2000-01-01"
                     }}
                     validate={values => {
@@ -119,11 +118,11 @@ export default class SignUp extends Component {
                                 onChange={formProps.setFieldValue}
                             />
                             <DateInput value="dob" initValue={formProps.values.dob} title="Date of birth" onChange={formProps.setFieldValue}/>
-                            <DropDownInput title="Select channel" value="channel" onChange={formProps.setFieldValue} 
+                            <DropDownInput title="Workspace" value="workspace" onChange={formProps.setFieldValue} placeholder="Select..."
                                 options={[{id: 1, label: "active"}, {id: 2, label: "passive"}]}/>
                             <RadioGroup 
                                 title="Gender" value="gender" onChange={formProps.setFieldValue} 
-                                options={formProps.values.channel}
+                                options={[{id: 1, label: "male"}, {id: 2, label: "female"}]}
                             />
                             
                             {/*<CustomInputTagsDropdown

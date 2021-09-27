@@ -58,6 +58,18 @@ export class FillData1632155121706 implements MigrationInterface {
           name: "Project 3",
           createdAt: new Date()
         },
+        {
+          name: "Management",
+          createdAt: new Date()
+        },
+        {
+          name: "Finance",
+          createdAt: new Date()
+        },
+        {
+          name: "Robotics",
+          createdAt: new Date()
+        },
       ]),
     );
 

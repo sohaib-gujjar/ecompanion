@@ -69,7 +69,7 @@ export class RadioGroup extends React.Component {
     if (!this.props.selected) this.props.onChange(this.props.value, this.props.options[0]);
   }
   onChange = e => {
-    let selected = _.find(this.props.options, { id: e.currentTarget.value });
+    let selected = _.find(this.props.options, function(o) { return o.id == e.currentTarget.value; });
     this.props.onChange(this.props.value, selected);
   };
   render() {
@@ -82,7 +82,7 @@ export class RadioGroup extends React.Component {
           return (
             <label className="carton" key={key}>
               <Field
-                id={"formik-radio-" + option.id}
+                //id={"formik-radio-" + option.id}
                 name={this.props.value}
                 value={option.id}
                 defaultChecked={

@@ -334,26 +334,30 @@ body {
   /********************************************************************/
   .checkbox-group {
     margin: 2% 0;
+    display: flex;
+    flex-wrap: wrap;
+
     @media screen and (max-width: 700px) {
       width: 89%;
     }
     .title {
-      font-weight: 600;
       font-size: $normal-text;
+      min-width: 33%;
     }
+
     .carton {
-      margin: 1% 0;
+      margin: 1%;
       display: block;
       position: relative;
-      padding-left: 60px;
+      padding-left: 50px;
       cursor: pointer;
-      font-size: 22px;
+      
       -webkit-user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
       user-select: none;
+      
       .radio-title {
-        font-weight: bold;
         font-size: $normal-text;
       }
       .radio-description {
@@ -370,9 +374,9 @@ body {
       position: absolute;
       top: 0;
       left: 0;
-      height: 35px;
-      width: 35px;
-      background-color: #eee;
+      height: 30px;
+      width: 30px;
+      background-color: #ccc;
       border: 1px darkgray solid;
       border-radius: 10%;
       
@@ -383,28 +387,29 @@ body {
   
     
     .carton:hover input ~ .checkmark {
-      background-color: #ccc;
+      background-color: #999;
     }
     .carton input:checked ~ .checkmark {
       background-color: #fff;
     }
-    .checkmark:after {
+    .checkmark::after {
       content: "";
       position: absolute;
       display: none;
     }
-    .carton input:checked ~ .checkmark:after {
+
+    .carton input:checked ~ .checkmark::after {
       display: block;
     }
-    .carton .checkmark:after {
+    .carton .checkmark::after {
       top: 4px;
       left: 4px;
-      width: 25px;
-      height: 25px;
+      width: 20px;
+      height: 20px;
       background: $sec-color;
       border-radius: 10%; 
     }
-    .carton .radio:after {
+    .carton .radio::after {
       border-radius: 50%;
     }
   }

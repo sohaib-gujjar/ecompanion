@@ -52,6 +52,8 @@ cd  node-ecomapanion-server/
 ![Alt text](https://github.com/sohaib-gujjar/ecompanion/blob/master/react-ecompanion-app/public/register.png "Optional Title")
 ### Sign In page
 ![Alt text](https://github.com/sohaib-gujjar/ecompanion/blob/master/react-ecompanion-app/public/login.png?raw=true "Optional Title")
+### Profile page
+![Alt text](https://github.com/sohaib-gujjar/ecompanion/blob/master/react-ecompanion-app/public/profile.png?raw=true "Optional Title")
 
 
 ## Swagger Documentation

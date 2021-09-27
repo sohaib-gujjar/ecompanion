@@ -24,7 +24,7 @@ export class init1632145121706 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE \`e-companion\`.\`teams_users_user\` ADD CONSTRAINT \`FK_87fc9fa5eb07beb301a3bd90f2e\` FOREIGN KEY (\`teamsId\`) REFERENCES \`e-companion\`.\`teams\`(\`id\`) ON DELETE CASCADE ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE \`e-companion\`.\`teams_users_user\` ADD CONSTRAINT \`FK_f675843e42c3220d3c34bd81e1d\` FOREIGN KEY (\`userId\`) REFERENCES \`e-companion\`.\`user\`(\`id\`) ON DELETE CASCADE ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE \`e-companion\`.\`workspace_users_user\` ADD CONSTRAINT \`FK_e560bebe0dad802fbb036ba8788\` FOREIGN KEY (\`workspaceId\`) REFERENCES \`e-companion\`.\`workspace\`(\`id\`) ON DELETE CASCADE ON UPDATE CASCADE`);
-        await queryRunner.query(`ALTER TABLE \`e-companion\`.\`workspace_users_user\` ADD CONSTRAINT \`FK_ff70af68685d8a5d6b588dfdc5b\` FOREIGN KEY (\`userId\`) REFERENCES \`e-companion\`.\`user\`(\`id\`) ON DELETE CASCADE ON UPDATE CASCADE`);
+        await queryRunner.query(`ALTER TABLE \`e-companion\`.\`workspace_users_user\` ADD CONSTRAINT \`FK_ff70af68685d8a5d6b588dfdc5b\` FOREIGN KEY (\`userId\`) REFERENCES \`e-companion\`.\`user\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
