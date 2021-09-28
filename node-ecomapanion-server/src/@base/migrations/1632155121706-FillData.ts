@@ -39,6 +39,22 @@ export class FillData1632155121706 implements MigrationInterface {
           description: "none",
           createdAt: new Date()
         },
+        {
+          email: 'test2@test.com',
+          firstName: 'test',
+          lastName: 'two',
+          password: "$2a$10$LY6Me51wMn9EUJadsHupA.iR7PL4RKT8kP8ftBMTRNw3VfvrGtgvS",
+          description: "none",
+          createdAt: new Date()
+        },
+        {
+          email: 'any@any.com',
+          firstName: 'user',
+          lastName: 'one',
+          password: "$2a$10$LY6Me51wMn9EUJadsHupA.iR7PL4RKT8kP8ftBMTRNw3VfvrGtgvS",
+          description: "none",
+          createdAt: new Date()
+        },
       ]),
     );
 
@@ -122,6 +138,26 @@ export class FillData1632155121706 implements MigrationInterface {
           name: "Backend",
           createdAt: new Date(),
           workspace: ws[2]
+        },
+        {
+          name: "Financial Team",
+          createdAt: new Date(),
+          workspace: ws[3]
+        },
+        {
+          name: "Invoice Team",
+          createdAt: new Date(),
+          workspace: ws[4]
+        },
+        {
+          name: "Dynamics",
+          createdAt: new Date(),
+          workspace: ws[5]
+        },
+        {
+          name: "Kinematics",
+          createdAt: new Date(),
+          workspace: ws[5]
         },
       ]),
     );

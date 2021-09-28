@@ -61,10 +61,10 @@ export function Navigation(props) {
 
   if (user)
     return (
-      <div className="dropdown" ref={wrapperRef}>
+      <div className="custom-dropdown" ref={wrapperRef}>
         <a href="#" className="nav-toggle" aria-expanded="false" onClick={() => setOpenDropdown()}>
           <span className="user-avatar">{user.firstName.substr(0,1) + '' + user.lastName.substr(0,1)}</span>
-          <span>{user.firstName + ' ' + user.lastName}</span>
+          <span className="uname">{user.firstName + ' ' + user.lastName}</span>
         </a>
         {
           isOpen &&

@@ -18,7 +18,7 @@ export default class TeamService {
                 const results = await getConnection().getRepository(Teams).find();
                 resolve(results);
             } catch (error) {
-                reject(error)
+                reject({ error })
             }
         });
     }
@@ -28,14 +28,16 @@ export default class TeamService {
             try {
                 const results = await getConnection()
                     .createQueryBuilder(Teams, "teams")
-                    .leftJoinAndSelect("teams.workspace", "workspace")
-                    .leftJoinAndSelect("workspace.users", "user", "user.id=:id", { id: id })
+                    .leftJoinAndSelect("teams.users", "team_user", "team_user.id=:id", { id: id })
+                    .innerJoinAndSelect("teams.workspace", "workspace")
+                    .innerJoinAndSelect("workspace.users", "user", "user.id=:id", { id: id })
+
                     //.where("user.id=:id", { id: id})
                     .getMany();
 
                 resolve(results);
             } catch (error) {
-                reject(error)
+                reject({ error })
             }
         });
     }
@@ -47,29 +49,25 @@ export default class TeamService {
                     .then(team => {
                         if (team) {
                             getManager().getRepository(User).find({ id: userId })
-                                .then(user => {
+                                .then(async user => {
                                     if (user) {
-                                        getManager().createQueryBuilder()
+                                        await getManager().createQueryBuilder()
                                             .relation(User, 'teams')
                                             .of(user)
                                             .add(team.id)
-                                            .then(
-                                                data => {
-                                                    resolve(data)
-                                                },
-                                                err => { reject(err) }
-                                            )
+
+                                        resolve(user)
                                     }
-                                    else reject('User not found!')
+                                    else reject({ message: 'User not found!' })
                                 },
-                                    error => reject(error)
+                                    error => reject({ error })
                                 )
                         }
-                        else reject('Team not found!')
+                        else reject({ message: 'Team not found!' })
                     })
-                    .catch(err => reject(err))
+                    .catch(err => reject({ err }))
             } catch (error) {
-                reject(error)
+                reject({ error })
             }
         });
     };
@@ -77,30 +75,28 @@ export default class TeamService {
     public async unJoinTeams(teamId: string, userId: string): Promise<any> {
         return new Promise<any>(async (resolve, reject) => {
             try {
-                console.error("------------ teams remove **************", userId, "----temmm----", teamId)
                 getManager().getRepository(User).findOne({
                     relations: ["teams"],
                     where: {
                         id: userId
                     }
                 })
-                .then(
-                    async user => {
-                        console.error("teams remove user found")
-                        let result = await getRepository(User)
-                        .createQueryBuilder()
-                        .relation(User, "teams")
-                        .of(user)
-                        .remove(teamId)
+                    .then(
+                        async user => {
+                            await getRepository(User)
+                                .createQueryBuilder()
+                                .relation(User, "teams")
+                                .of(user)
+                                .remove(teamId)
 
-                        resolve(result);
-                    }
-                )
-                .catch(err => reject(err))
+                            resolve({message: "User added to team"});
+                        }
+                    )
+                    .catch(err => reject({ err }))
 
-                
+
             } catch (error) {
-                reject(error)
+                reject({ error })
             }
         });
     };
@@ -116,11 +112,11 @@ export default class TeamService {
                             t.workspace = ws;
                             resolve(await getManager().getRepository(Teams).create(t))
                         },
-                        error => reject(error)
+                        error => reject({ error })
                     )
 
             } catch (error) {
-                reject(error)
+                reject({ error })
             }
         });
     };
@@ -132,7 +128,7 @@ export default class TeamService {
                 ws.name = dto.name;
                 resolve(await getManager().getRepository(Teams).update(dto.id, ws));
             } catch (error) {
-                reject(error)
+                reject({ error })
             }
         });
     };
@@ -142,7 +138,7 @@ export default class TeamService {
             try {
                 resolve(await getManager().getRepository(Teams).delete(id));
             } catch (error) {
-                reject(error)
+                reject({ error })
             }
         });
     };

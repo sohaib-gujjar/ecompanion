@@ -47,9 +47,6 @@ export default function Profile() {
             })
     }
     const load = useCallback(() => {
-        console.log('load again')
-        
-        alert('load again')
         loadWorkSpaces();
         loadTeams();
     }, []);
@@ -80,7 +77,6 @@ function Workspace({ workspace, load }) {
         })
             .then(res => res.json())
             .then(res => {
-                alert(JSON.stringify(res))
                 load()
             })
             .catch(err => {
@@ -97,7 +93,6 @@ function Workspace({ workspace, load }) {
         })
             .then(res => res.json())
             .then(res => {
-                alert(JSON.stringify(res))
                 load()
             })
             .catch(err => {
@@ -107,7 +102,7 @@ function Workspace({ workspace, load }) {
     return(
         <Container style={{ boxShadow: "1px 2px 10px rgba(0, 0, 0, 0.25)", marginTop: "15%" }}>
                     <Row>
-                        <h1>Workspace</h1><Button variant="primary" onClick={e => load()}>Join</Button>
+                        <h1 style={{ margin: "3%"}}>Workspace</h1>
                     </Row>
                     {
                         workspace && <Table responsive>
@@ -121,7 +116,7 @@ function Workspace({ workspace, load }) {
                             <tbody>
                                 {
                                     _.map(workspace, (data, i) => {
-                                        return <tr>
+                                        return <tr key={i}>
                                             <td>{i + 1}</td>
                                             <td>{data.name}</td>
                                             <td>
@@ -182,7 +177,7 @@ function Teams({ teams, load }) {
     return (
         <Container style={{ boxShadow: "1px 2px 10px rgba(0, 0, 0, 0.25)", marginTop: "5%" }}>
             <Row>
-                <h1>Teams</h1>
+                <h1 style={{ margin: "3%"}}>Teams</h1>
             </Row>
             {
                 teams && <Table responsive>
@@ -190,6 +185,7 @@ function Teams({ teams, load }) {
                         <tr>
                             <th>#</th>
                             <th>Name</th>
+                            <th>Workspace</th>
                             <th>Join</th>
                         </tr>
                     </thead>
@@ -199,9 +195,10 @@ function Teams({ teams, load }) {
                                 return <tr>
                                     <td>{i + 1}</td>
                                     <td>{data.name}</td>
+                                    <td>{data.workspace.name}</td>
                                     <td>
                                         {
-                                            data.workspace.users.length == 0 ?
+                                            data.users.length === 0 ?
                                                 <Button variant="primary" value={i} onClick={e => joinTeam(e, data)}>Join</Button>
                                                 :
                                                 <Button variant="danger" value={i} onClick={e => removeTeam(e, data)}>Remove</Button>

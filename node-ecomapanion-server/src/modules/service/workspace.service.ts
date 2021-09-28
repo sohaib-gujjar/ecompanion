@@ -17,7 +17,7 @@ export default class WorkspaceService {
                 const results = await getConnection().getRepository(Workspace).find();
                 resolve(results);
             } catch (error) {
-                reject(error)
+                reject({error})
             }
         });
     }
@@ -39,7 +39,7 @@ export default class WorkspaceService {
 
                 resolve(results);
             } catch (error) {
-                reject(error)
+                reject({error})
             }
         });
     }
@@ -54,7 +54,7 @@ export default class WorkspaceService {
                 });
                 resolve(results);
             } catch (error) {
-                reject(error)
+                reject({error})
             }
         });
     }
@@ -66,28 +66,26 @@ export default class WorkspaceService {
                 .then( ws => {
                     if(ws) {
                         getManager().getRepository(User).find({id: userId})
-                            .then(user => {
+                            .then(async user => {
                                 if(user) {
-                                    getManager().createQueryBuilder()
-                                    .relation(User, 'workspace')
-                                    .of(user)
-                                    .add(ws.id)
-                                    .then(
-                                        data => {
-                                            resolve(data)
-                                        },
-                                        err => { reject(err) }
-                                    )
+                                    
+                                        await getManager().createQueryBuilder()
+                                            .relation(User, 'workspace')
+                                            .of(user)
+                                            .add(ws.id)
+                                        
+                                        resolve({message: "User added to workspace"});
+                                    
                                 }
-                                else reject('User not found!')
+                                else reject({message: 'User not found!'})
                             })
-                            .catch(err => reject(err))
+                            .catch(err => reject({err}))
                     }
-                    else reject('Workspace not found!')
+                    else reject({message: "Workspace not found!"})
                 })
-                .catch(err => reject(err))
+                .catch(err => reject({err}))
             } catch (error) {
-                reject(error)
+                reject({error})
             }
         });
     };
@@ -96,7 +94,7 @@ export default class WorkspaceService {
     public async unJoinWS(wsId: string, userId: string): Promise<any> {
         return new Promise<any>(async (resolve, reject) => {
             try {
-                getManager().getRepository(User).findOne({
+                getRepository(User).findOne({
                     relations: ["workspace", "teams", "teams.workspace"],
                     where: {
                         id: userId
@@ -104,30 +102,37 @@ export default class WorkspaceService {
                 })
                 .then(
                     async user => {
+
                         user.teams.map(async team => {
                             if( team.workspace.id === wsId) {
                                 await getRepository(User)
-                                    .createQueryBuilder()
-                                    .relation(User, "teams")
-                                    .of(user)
-                                    .remove(team.id)
+                                        .createQueryBuilder()
+                                        .relation(User, "teams")
+                                        .of(user)
+                                        .remove(team.id)
                             }
                         })
 
-                        let result = await getRepository(User)
-                                    .createQueryBuilder()
-                                    .relation(User, "workspace")
-                                    .of(user)
-                                    .remove(wsId)
+
+                        user.workspace.map(async workspace => {
+                            if( workspace.id === wsId) {
+                                await getRepository(User)
+                                        .createQueryBuilder()
+                                        .relation(User, "workspace")
+                                        .of(user)
+                                        .remove(wsId)
+                            }
+                        })
 
 
-                        resolve(result)
+                        resolve(user)
                     }
                 )
+                .catch(err => reject({err}))
 
                 
             } catch (error) {
-                reject(error)
+                reject({error})
             }
         });
     };
@@ -139,7 +144,7 @@ export default class WorkspaceService {
                 ws.name = dto.name;
                 resolve(await getManager().getRepository(Workspace).create(ws))
             } catch (error) {
-                reject(error)
+                reject({error})
             }
         });
     };
@@ -151,7 +156,7 @@ export default class WorkspaceService {
                 ws.name = dto.name;
                 resolve(await getManager().getRepository(Workspace).update(dto.id, ws));
             } catch (error) {
-                reject(error)
+                reject({error})
             }
         });
     };
@@ -161,7 +166,7 @@ export default class WorkspaceService {
             try {
                 resolve(await getManager().getRepository(Workspace).delete(id));
             } catch (error) {
-                reject(error)
+                reject({error})
             }
         });
     };

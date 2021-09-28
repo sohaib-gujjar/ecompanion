@@ -1,4 +1,4 @@
-import { getConnection, getManager } from "typeorm";
+import { getConnection, getManager, getRepository } from "typeorm";
 import CreateTeamsMessageDTO from "../dto/create-teams-message.dto";
 import CreateUserMessageDTO from "../dto/create-user-message.dto";
 import CreateWorkSpaceMessageDTO from "../dto/create-workspace-message.dto";
@@ -27,7 +27,7 @@ export default class SlackService {
 
                 resolve(results);
             } catch (error) {
-                reject(error)
+                reject({error})
             }
         });
     }
@@ -45,7 +45,7 @@ export default class SlackService {
 
                 resolve(results);
             } catch (error) {
-                reject(error)
+                reject({error})
             }
         });
     }
@@ -65,7 +65,7 @@ export default class SlackService {
 
                 resolve(results);
             } catch (error) {
-                reject(error)
+                reject({error})
             }
         });
     }
@@ -86,7 +86,7 @@ export default class SlackService {
                 
                 resolve(results);
             } catch (error) {
-                reject(error)
+                reject({error})
             }
         });
     }
@@ -107,7 +107,7 @@ export default class SlackService {
                 
                 resolve(results);
             } catch (error) {
-                reject(error)
+                reject({error})
             }
         });
     }
@@ -139,7 +139,7 @@ export default class SlackService {
                 
                 resolve(results);
             } catch (error) {
-                reject(error)
+                reject({error})
             }
         });
     }
@@ -161,13 +161,13 @@ export default class SlackService {
 
                                     getManager().getRepository(Message).insert(message)
                                         .then (res => resolve(res))
-                                        .catch(err => reject(err))
+                                        .catch(err => reject({err}))
                                         
                                 }
-                                else reject("Receiver not found")
+                                else reject({ message: "Receiver not found"})
                             })
                       }
-                      else reject("User not found")
+                      else reject({ message: "User not found"})
                     })
 
             } catch (error) {
@@ -195,14 +195,14 @@ export default class SlackService {
                                     .catch(err => reject(err))
                                     
                             }
-                            else reject("Team not found")
+                            else reject({ message: "Team not found"})
                         })
                   }
-                  else reject("User not found")
+                  else reject({ message: "User not found"})
                 })
 
             } catch (error) {
-                reject(error)
+                reject({error})
             }
         });
     };
@@ -223,17 +223,17 @@ export default class SlackService {
 
                                     getManager().getRepository(Message).insert(message)
                                         .then (res => resolve(res))
-                                        .catch(err => reject(err))
+                                        .catch(err => reject({err}))
                                         
                                 }
-                                else reject("Receiver not found")
+                                else reject({ message: "Receiver not found"})
                             })
                       }
-                      else reject("User not found")
+                      else reject({ message: "User not found"})
                     })
 
             } catch (error) {
-                reject(error)
+                reject({error})
             }
         });
     };
@@ -243,7 +243,7 @@ export default class SlackService {
             try {
                 resolve(data);
             } catch (error) {
-                reject(error)
+                reject({error})
             }
         });
     };
@@ -253,7 +253,25 @@ export default class SlackService {
             try {
                 resolve(id);
             } catch (error) {
-                reject(error)
+                reject({error})
+            }
+        });
+    };
+
+
+    public async searchUser (text: string): Promise<any> {
+        return new Promise<any>(async (resolve, reject) => {
+            try {
+                console.log(text)
+                let users = await getManager()
+                    .createQueryBuilder(User, "user")
+                    .where("user.firstName like :text", {text: `%${text}%`})
+                    .orWhere("user.lastName like :text2", {text2: `%${text}%`})
+                    .getMany();
+
+                resolve(users)
+            } catch (error) {
+                reject({error})
             }
         });
     };

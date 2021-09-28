@@ -10,7 +10,7 @@ module.exports = {
     entities: [`${SOURCE}/**/*.entity{.ts,.js}`],
     synchronize: false,
     dropSchema: false,
-    logging: true,
+    logging: false,
     migrationsTableName: "migration_table",
     migrations: [
         "src/@base/migrations/*.ts"//`${SOURCE}/@base/migrations/*{.ts,.js}`

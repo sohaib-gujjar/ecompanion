@@ -33,6 +33,9 @@ export default class SlackController {
         this.router.post(`${this.path}/userMessage`, validateDTO(CreateUserMessageDTO), this.userMessage);
         this.router.post(`${this.path}/teamsMessage`, validateDTO(CreateTeamsMessageDTO), this.teamsMessage);
         this.router.post(`${this.path}/workspaceMessage`, validateDTO(CreateWorkSpaceMessageDTO), this.workspaceMessage);
+
+
+        this.router.get(`${this.path}/user/search/:text`, this.searchUser);
     }
 
     getUserWorkspace = async (req: express.Request, res: express.Response) => {
@@ -122,6 +125,17 @@ export default class SlackController {
             const dto: CreateWorkSpaceMessageDTO = plainToClass(CreateWorkSpaceMessageDTO, req.body);
             let results = await this.service.createWorkspaceMessage(dto);
             res.status(200).send(results);
+        } catch (e) {
+            res.status(500).send(e.message);
+        }
+    }
+
+
+    searchUser = async (req: express.Request, res: express.Response) => {
+        try {
+            const text = req.params.text;
+            const item: any = await this.service.searchUser(text);
+            res.status(200).send(item);
         } catch (e) {
             res.status(500).send(e.message);
         }
