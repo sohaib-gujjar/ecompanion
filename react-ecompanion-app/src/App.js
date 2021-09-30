@@ -8,6 +8,7 @@ import './styles/App.scss';
 import {  useState } from "react";
 import { UserProvider } from "./context/UserContext";
 import Profile from "./pages/Profile";
+import Cookies from 'js-cookie';
 
 function App() {
 
@@ -36,7 +37,9 @@ function App() {
             <Setting />
           </Route>
           <Route path="/logout" component={(() => {
-            //sessionStorage.removeItem('token');
+            sessionStorage.removeItem('token');
+            Cookies.remove("token");
+            Cookies.remove("token", { path: "/"})
             window.location.href = "/"
           })}>
 

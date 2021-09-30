@@ -14,48 +14,58 @@ const service = new AuthService();
 
 AuthRouter.post(`${path}/login`, validateDTO(LoginDTO), async (req: Request, res: Response, next: NextFunction) => {
   try {
-    
+
     console.log("login", req.body)
 
     service.login(req.body)
-    .then(async user => {
-      if(user) {
-        console.log(user.email);
+      .then(async user => {
+        if (user) {
+          console.log(user.email);
 
-        try {
-          const token = jwt.sign(
-            { id: user.email, user: { id: user.id, firstname: user.firstName, lastname: user.lastName, email: user.email}, exp: 60000, },
-            process.env.TOKEN_KEY
-          );
-  
-          console.log("token", token)
-          console.log("session", req.session)
-          req.session.regenerate(function (err) {
-            if(err){
-              return res.json({code: 500, msg: 'session error'});
-            }
-            req.session = token;
-          });
-  
-          res.cookie("token", token, {httpOnly: true, secure: process.env.ENVIRONMENT === "production"})
-            .header('Content-Type', 'application/json;charset=UTF-8')
-            .header("x-auth-token", token)
-            .status(200)
-            .json({ 
-              id: user.id, 
-              email: user.email, 
-              firstName: user.firstName, 
-              lastName: user.lastName, 
-              token: token
+          try {
+            const token = jwt.sign(
+              {
+                id: user.email,
+                user: {
+                  id: user.id,
+                  firstName: user.firstName,
+                  lastName: user.lastName,
+                  email: user.email,
+                  img: user.img
+                }, exp: 60000,
+              },
+              process.env.TOKEN_KEY
+            );
+
+            console.log("token", token)
+            req.session.regenerate(function (err) {
+              if (err) {
+                return res.json({ code: 500, msg: 'session error' });
+              }
+              req.session = token;
+              console.log("session", req.session)
             });
-          
-        } catch (error) {
-          console.log(error)
-          throw error;
+
+            res.cookie("token", token, { httpOnly: true, secure: process.env.ENVIRONMENT === "production" })
+              .header('Content-Type', 'application/json;charset=UTF-8')
+              .header("x-auth-token", token)
+              .status(200)
+              .json({
+                id: user.id,
+                email: user.email,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                img: user.img,
+                token: token
+              });
+
+          } catch (error) {
+            console.log(error)
+            throw error;
+          }
         }
-        }
-    })
-    .catch(err => res.status(401).send({message: err}))
+      })
+      .catch(err => res.status(401).send({ message: err }))
 
 
 
@@ -97,7 +107,7 @@ AuthRouter.post(`${path}/login`, validateDTO(LoginDTO), async (req: Request, res
     })(req, res, next);*/
 
   } catch (e) {
-    res.status(500).send({message: e.message});
+    res.status(500).send({ message: e.message });
   }
 });
 
@@ -118,8 +128,8 @@ AuthRouter.get(`${path}/logout`, async (req: Request, res: Response) => {
     const body = req.body;
     const items: any = await service.logout(body);
     res.clearCookie('token');
-    req.session.destroy(function(){
-      res.status(201).send({message: "logout"});
+    req.session.destroy(function () {
+      res.status(201).send({ message: "logout" });
     });
   } catch (e) {
     res.status(500).send(e.message);

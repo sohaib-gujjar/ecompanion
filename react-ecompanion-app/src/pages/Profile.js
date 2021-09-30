@@ -20,7 +20,7 @@ export default function Profile() {
     }, [])
 
     function loadWorkSpaces() {
-        let user = context.user.user;
+        let user = context.user;
         fetch("http://localhost:3001/slack/workspace/user/" + user.id, {
             method: 'GET'
         })
@@ -34,7 +34,7 @@ export default function Profile() {
     }
 
     function loadTeams() {
-        let user = context.user.user;
+        let user = context.user;
         fetch("http://localhost:3001/slack/team/user/" + user.id, {
             method: 'GET'
         })
@@ -54,7 +54,7 @@ export default function Profile() {
 
     if (context.user) return (
         <Header active>
-            <div>
+            <div style={{ margin: "8% 0" }}>
                 <Workspace workspace={workspace} load={load}/>
                 <Teams teams={teams} load={load}/>
             </div>
@@ -68,7 +68,7 @@ function Workspace({ workspace, load }) {
     const context = useContext(UserContext);
 
     function joinWS(event, data) {
-        let user = context.user.user;
+        let user = context.user;
         fetch("http://localhost:3001/slack/workspace/join/"+ data.id+ "/"+ user.id, {
             method: 'POST',
             headers: {
@@ -84,7 +84,7 @@ function Workspace({ workspace, load }) {
             })
     }
     function removeWS(event, data) {
-        let user = context.user.user;
+        let user = context.user;
         fetch("http://localhost:3001/slack/workspace/remove/"+ data.id+ "/"+ user.id, {
             method: 'POST',
             headers: {
@@ -100,7 +100,7 @@ function Workspace({ workspace, load }) {
             })
     }
     return(
-        <Container style={{ boxShadow: "1px 2px 10px rgba(0, 0, 0, 0.25)", marginTop: "15%" }}>
+        <Container style={{ boxShadow: "1px 2px 10px rgba(0, 0, 0, 0.25)"}}>
                     <Row>
                         <h1 style={{ margin: "3%"}}>Workspace</h1>
                     </Row>
@@ -142,7 +142,7 @@ function Teams({ teams, load }) {
     const context = useContext(UserContext);
 
     function joinTeam(event, data) {
-        let user = context.user.user;
+        let user = context.user;
         fetch("http://localhost:3001/slack/team/join/"+ data.id+ "/"+ user.id, {
             method: 'POST',
             headers: {
@@ -158,7 +158,7 @@ function Teams({ teams, load }) {
             })
     }
     function removeTeam(event, data) {
-        let user = context.user.user;
+        let user = context.user;
         fetch("http://localhost:3001/slack/team/remove/"+ data.id+ "/"+ user.id, {
             method: 'POST',
             headers: {
@@ -192,7 +192,7 @@ function Teams({ teams, load }) {
                     <tbody>
                         {
                             _.map(teams, (data, i) => {
-                                return <tr>
+                                return <tr key={i}>
                                     <td>{i + 1}</td>
                                     <td>{data.name}</td>
                                     <td>{data.workspace.name}</td>

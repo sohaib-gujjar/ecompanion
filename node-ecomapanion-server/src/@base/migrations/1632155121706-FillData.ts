@@ -4,12 +4,44 @@ import { User } from '../../modules/model/user.entity';
 import Workspace from '../../modules/model/workspace.entity';
 import Teams from '../../modules/model/team.entity';
 import Message from '../../modules/model/message.entity';
+import File from '../../modules/model/file.entity';
 
 export class FillData1632155121706 implements MigrationInterface {
 
   name= "FillData1632155121706";
   
   public async up(queryRunner: QueryRunner): Promise<any> {
+
+    console.log('--------------------Files--------------------');
+    const files = await queryRunner.manager.getRepository<File>(File).save(
+      plainToClass(User, [
+        {
+          name: 'user.png',
+          path: '/upload/avatars/user.png',
+          type: 'png',
+          createdAt: new Date()
+        },
+        {
+          name: 'user_2.png',
+          path: '/upload/avatars/user_2.png',
+          type: 'png',
+          createdAt: new Date()
+        },
+        {
+          name: 'user_3.png',
+          path: '/upload/avatars/user_3.png',
+          type: 'png',
+          createdAt: new Date()
+        },
+        {
+          name: 'user_4.png',
+          path: '/upload/avatars/user_4.png',
+          type: 'png',
+          createdAt: new Date()
+        },
+      ]),
+    );
+
     
     
     console.log('--------------------Fill user--------------------');
@@ -21,7 +53,8 @@ export class FillData1632155121706 implements MigrationInterface {
           lastName: 'one',
           password: "$2a$10$LY6Me51wMn9EUJadsHupA.iR7PL4RKT8kP8ftBMTRNw3VfvrGtgvS",
           description: "none",
-          createdAt: new Date()
+          createdAt: new Date(),
+          img: files[0]
         },
         {
           email: 'admin@admin.com',
@@ -29,7 +62,8 @@ export class FillData1632155121706 implements MigrationInterface {
           lastName: 'one',
           password: "$2a$10$LY6Me51wMn9EUJadsHupA.iR7PL4RKT8kP8ftBMTRNw3VfvrGtgvS", // 12345678
           description: "none",
-          createdAt: new Date()
+          createdAt: new Date(),
+          img: files[1]
         },
         {
           email: 'admin2@admin.com',
@@ -37,7 +71,8 @@ export class FillData1632155121706 implements MigrationInterface {
           lastName: 'two',
           password: "$2a$10$LY6Me51wMn9EUJadsHupA.iR7PL4RKT8kP8ftBMTRNw3VfvrGtgvS",
           description: "none",
-          createdAt: new Date()
+          createdAt: new Date(),
+          img: files[2]
         },
         {
           email: 'test2@test.com',
@@ -45,15 +80,17 @@ export class FillData1632155121706 implements MigrationInterface {
           lastName: 'two',
           password: "$2a$10$LY6Me51wMn9EUJadsHupA.iR7PL4RKT8kP8ftBMTRNw3VfvrGtgvS",
           description: "none",
-          createdAt: new Date()
+          createdAt: new Date(),
+          img: files[3]
         },
         {
-          email: 'any@any.com',
+          email: 'admin3@any.com',
           firstName: 'user',
-          lastName: 'one',
+          lastName: 'three',
           password: "$2a$10$LY6Me51wMn9EUJadsHupA.iR7PL4RKT8kP8ftBMTRNw3VfvrGtgvS",
           description: "none",
-          createdAt: new Date()
+          createdAt: new Date(),
+          img: files[4]
         },
       ]),
     );

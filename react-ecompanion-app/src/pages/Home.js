@@ -57,7 +57,7 @@ export default function Home() {
               <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
             </Row>
             <Row style={{ textAlign: "center" }}>
-              <Col sm={3}>
+              <Col sm={3} style={{ boxShadow: "1px 1px 1px 1px rgba(0, 0, 0, 0.1)"}}>
                 <img src="user.png" alt=""/>
                 <h4>Team Member</h4>
                 <p>Software Engineer</p>
@@ -66,7 +66,7 @@ export default function Home() {
                 <a href="#" className="fa fa-facebook"/>
                 <a href="#" className="fa fa-twitter"/>
               </Col>
-              <Col sm={3}>
+              <Col sm={3} style={{ boxShadow: "1px 1px 1px 1px rgba(0, 0, 0, 0.1)"}}>
                 <img src="user.png" alt=""/>
                 <h4>Team Member</h4>
                 <p>Backend Developer</p>
@@ -75,7 +75,8 @@ export default function Home() {
                 <a href="#" className="fa fa-facebook"/>
                 <a href="#" className="fa fa-twitter"/>
               </Col>
-              <Col sm={3}> <img src="user.png" alt=""/>
+              <Col sm={3} style={{ boxShadow: "1px 1px 1px 1px rgba(0, 0, 0, 0.1)"}}>
+                <img src="user.png" alt=""/>
                 <h4>Team Member</h4>
                 <p>Frontend Developer</p>
                 <a href="#" className="fa fa-linkedin"/>
@@ -83,7 +84,8 @@ export default function Home() {
                 <a href="#" className="fa fa-facebook"/>
                 <a href="#" className="fa fa-twitter"/>
               </Col>
-              <Col sm={3}> <img src="user.png" alt=""/>
+              <Col sm={3} style={{ boxShadow: "1px 1px 1px 1px rgba(0, 0, 0, 0.1)"}}>
+                <img src="user.png" alt=""/>
                 <h4>Team Member</h4>
                 <p>Designer</p>
                 <a href="#" className="fa fa-linkedin"/>

@@ -28,7 +28,7 @@ export default function Signin() {
                 return response.json().then(err => { throw Error(err) });
             })
             .then(res => {
-                context.setUserContext({ user: res })
+                context.setUserContext(res)
                 history.push("/dashboard")
             })
             .catch(err => {

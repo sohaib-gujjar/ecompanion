@@ -64,7 +64,7 @@ export default function Dashboard() {
     useEffect(() => {
         if (context) {
             if (context.user) {
-                const current_user = context.user.user.email;
+                const current_user = context.user.email;
 
                 getWorkspaces(current_user)
                 getUserTeams(current_user)
@@ -80,7 +80,7 @@ export default function Dashboard() {
     }, []);
 
     function onContactChange(e, d) {
-        const current_user = context.user.user.id;
+        const current_user = context.user.id;
         fetch("http://localhost:3001/slack/getDM/" + current_user + "/" + d.id, {
             method: 'GET'
         })
@@ -126,7 +126,7 @@ export default function Dashboard() {
         if (message.contact) {
             const body = {
                 text: text,
-                sender: context.user.user,
+                sender: context.user,
                 receiver: message.contact
             }
             sendDirectMessage(body)
@@ -134,7 +134,7 @@ export default function Dashboard() {
         else if (message.team) {
             const body = {
                 text: text,
-                user: context.user.user,
+                user: context.user,
                 teams: message.team
             }
             sendTeamsMessage(body)
@@ -142,7 +142,7 @@ export default function Dashboard() {
         else if (message.workspace) {
             const body = {
                 text: text,
-                user: context.user.user,
+                user: context.user,
                 workspace: message.workspace
             }
             sendWorkspaceMessage(body);
@@ -216,7 +216,7 @@ export default function Dashboard() {
                 <Header />
             </Row>
             <Row style={{ height: "90vh", marginTop: 0, marginBottom: 0 }}>
-                <Col sm={3} md={3} lg={3} className="slack-user-window">
+                <Col sm={3} md={3} lg={3} className="slack-user-window" style={{overflow: "auto", height: "100%"}}>
                     <TeamsAndContacts
                         contacts={contacts}
                         channelJoined={workspace}
@@ -261,7 +261,7 @@ function TeamsAndContacts({ teamsJoined, channelJoined, contacts, onContactChang
                     {_.map(contacts, (data, i) => {
                         return (
                             <div key={"dm" + i} style={{ display: "block"}}>
-                                <span className="status"/>
+                                <span className={i % 2 === 0 ? "status" : "status active"}/>
                                 <span className="list-item" onClick={(e) => onContactChange(e, data)}>
                                     {data.firstName + ' ' + data.lastName}
                                 </span>
@@ -291,8 +291,14 @@ function ChatFooterPanel({ message, onSend }) {
         <>
             <Row className="chat-panel-footer">
                 <Col sm={1}>
-                    <div className="chat-icon">
-                        <span>{context.user ? context.user.user.firstName.substr(0, 1).toUpperCase() + '' + context.user.user.lastName.substr(0, 1).toUpperCase() : ""}</span>
+                    <div className="chat-icon" style={{paddingTop: "0"}}>
+                        {
+                        context.user && (
+                            context.user.img ? 
+                            <img className="chat-icon" style={{paddingTop: "0"}} src={`http://localhost:3001${context.user.img.path}`} />
+                            :
+                            <span>{context.user.firstName.substr(0, 1).toUpperCase() + '' + context.user.lastName.substr(0, 1).toUpperCase()}</span>
+                        )}
                     </div>
                 </Col>
                 <Col sm={11}>
@@ -329,10 +335,15 @@ function Chat({ chat }) {
 
     const context = useContext(UserContext);
     return (
-        <Container className={chat.user.email === (context.user.user.email || "") ? "chat reply" : "chat"}>
+        <Container className={chat.user.email === (context.user.email || "") ? "chat reply" : "chat"}>
             <Row>
                 <Col sm={1}>
-                    <div className="img-circle"><span>{chat.user.firstName.substr(0, 1).toUpperCase() + '' + chat.user.lastName.substr(0, 1).toUpperCase()}</span></div>
+                    {
+                        chat.user.img ? 
+                        <img className="img-circle" style={{paddingTop: "0"}} src={`http://localhost:3001${chat.user.img.path}`} />
+                        :
+                        <div className="img-circle"><span>{chat.user.firstName.substr(0, 1).toUpperCase() + '' + chat.user.lastName.substr(0, 1).toUpperCase()}</span></div>
+                    }
                 </Col>
                 <Col sm={10}>
                     <p><strong className="">{chat.user.firstName + ' ' + chat.user.lastName}</strong></p>

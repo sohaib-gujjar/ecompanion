@@ -5,11 +5,11 @@ const jwt = require("jsonwebtoken");
 export default function authorizationMiddleware(req: any, res: any, next: any) {
 
 
-    if(req.originalUrl.startsWith('/auth/') || req.originalUrl.startsWith('/slack/')) {return next();}
+    if(req.originalUrl.startsWith('/auth/') || req.originalUrl.startsWith('/slack/') || req.originalUrl.startsWith('/upload')) {return next();}
 
     console.log("session", req.session, req.session.token);
     
-    const token = req.headers["x-access-token"] || req.headers["authorization"] || req.cookies.token;
+    const token = req.headers["x-access-token"] || req.headers["authorization"];
     console.log("token", token);
 
     const { headers: { authorization } } = req;

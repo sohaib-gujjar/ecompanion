@@ -1,10 +1,12 @@
 import React, { createContext, useEffect, useState } from "react";
 import Cookies from 'js-cookie';
-import { Router } from "react-router-dom";
+import { Router, useHistory } from "react-router-dom";
 
 const UserContext = createContext();
 
 function UserProvider(props) {
+
+    let history = useHistory();
 
     const [contextState, setContextState] = useState({
         isSignIn: false,
@@ -15,7 +17,11 @@ function UserProvider(props) {
         console.log(contextState)
         if (!contextState.isSignIn) {
             
-            const token = sessionStorage.getItem('token');
+            let token = sessionStorage.getItem('token');
+            if (token && token !== undefined && token !== 'undefined') {
+                token = Cookies.get('token');
+                console.log("Cookie ", Cookies.get('token'))
+            }
             console.log(token)
 
             if (token && token !== undefined && token !== 'undefined') {
@@ -25,7 +31,10 @@ function UserProvider(props) {
                 if (tokenData.user) {
                     setSignIn(true)
                     setUserContext(tokenData.user)
+                    //history.push("/")
                 }
+
+                alert(JSON.stringify(tokenData.user))
             }
         }
     });
@@ -58,7 +67,9 @@ function UserProvider(props) {
 
         sessionStorage.setItem('token', JSON.stringify(user.token));
         
-        document.cookie = 'token' + '=' + user.token + ';' + 60000 + ';';
+        //document.cookie = 'token' + '=' + user.token + ';' + 60000 + ';';
+
+        Cookies.set("token", user.token, { expires: 1, path: "/" })
 
         setContextState({
             isSignIn: true,

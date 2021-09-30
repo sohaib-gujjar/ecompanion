@@ -37,10 +37,12 @@ createConnection().then(async connection => {
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
 
+    app.use("/upload", express.static(__dirname + '/upload'));
+
     // session config
     app.use(session({ 
         secret: process.env.SESSION_KEY,
-        cookie: { secure: false, maxAge: 60000 }, 
+        cookie: { secure: false, maxAge: 60000 , httpOnly: false}, 
         resave: false, // save session if unmodified
         saveUninitialized: true // create session until something stored
     }));

@@ -36,13 +36,15 @@ cd react-ecompanion-app && npm install
 - Before starting backend you need to create database and update database credentials to `ormconfig.js` and then run migrations.
 ```sh
 cd  node-ecomapanion-server/ 
-- npm run migrate:generate
 - npm run migrate:run
 - npm run start
 ```
 -   In the frontend and backend directory, you can run: `npm run start` to run the app in the development mode.
 -   Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 -   Create the user account and start messaging.
+
+## Swagger Documentation
+- see the api documentation at [http://localhost:3001/doc/](http://localhost:3001/doc/)
 
 ### Home page
 ![Alt text](https://github.com/sohaib-gujjar/ecompanion/blob/master/react-ecompanion-app/public/home.png "Optional Title")
@@ -55,9 +57,6 @@ cd  node-ecomapanion-server/
 ### Profile page
 ![Alt text](https://github.com/sohaib-gujjar/ecompanion/blob/master/react-ecompanion-app/public/profile.png?raw=true "Optional Title")
 
-
-## Swagger Documentation
-- see the api documentation at [http://localhost:3001/doc/](http://localhost:3001/doc/)
 
 ## Application Structure
 

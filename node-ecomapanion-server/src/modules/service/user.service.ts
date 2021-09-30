@@ -13,7 +13,12 @@ export default class UserService {
      public async getByEmail(email: string) : Promise<any> {
         return new Promise<any>(async (resolve, reject) => {
             try {
-                let user = await getManager().getRepository(User).findOne({ email: email});
+                let user = await getManager().getRepository(User).findOne({
+                    relations: ['img'],
+                    where: {
+                        email: email
+                    }
+                });
                 resolve(user)
             } catch (error) {
                 reject(error)

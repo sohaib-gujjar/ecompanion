@@ -53,6 +53,10 @@
         height: 10px;
         display: inline-block;
       }
+      .active {
+        background-color: green;
+        border: none;
+      }
 
       .list-item {
         font-weight: 500;

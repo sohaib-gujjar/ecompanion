@@ -80,6 +80,7 @@ export default class SlackService {
                     .createQueryBuilder(Message, "message")
                     .leftJoin('message.workspaceMessage', 'workspace')
                     .leftJoinAndSelect('message.user', 'user')
+                    .leftJoinAndSelect('user.img', 'file')
                     .where('workspace.id = :id', { id: id })
                     .orderBy('message.createdAt', 'ASC')
                     .getMany();
@@ -101,6 +102,7 @@ export default class SlackService {
                     .createQueryBuilder(Message, "message")
                     .leftJoin('message.teamsMessage', 'teams')
                     .leftJoinAndSelect('message.user', 'user')
+                    .leftJoinAndSelect('user.img', 'file')
                     .where('teams.id = :id', { id: id })
                     .orderBy('message.createdAt', 'ASC')
                     .getMany();
@@ -122,6 +124,7 @@ export default class SlackService {
                     .createQueryBuilder(Message, "message")
                     .leftJoinAndSelect('message.user', 'user')
                     .leftJoin('message.toUser', 'toUser')
+                    .leftJoinAndSelect('user.img', 'file')
                     .where('user.id = :fromId and toUser.id = :toId', { toId: toId, fromId: fromId })
                     .orWhere('user.id = :fromId2 and toUser.id = :toId2', { fromId2: toId, toId2: fromId })
                     /*.where(subQb => {
