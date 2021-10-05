@@ -3,6 +3,11 @@ import validateDTO from "../@base/middleware/validateDTO.middleware";
 import AuthService from "./auth.service";
 import LoginDTO from "./login.dto";
 
+import uploadSingleImageMiddleware from "../@base/multer.config";
+import HttpException from "../@base/exception/HttpException";
+import { plainToClass } from "class-transformer";
+import File from "../modules/model/file.entity";
+
 /**
  * Router Definition
  */
@@ -37,7 +42,6 @@ AuthRouter.post(`${path}/login`, validateDTO(LoginDTO), async (req: Request, res
               process.env.TOKEN_KEY
             );
 
-            console.log("token", token)
             req.session.regenerate(function (err) {
               if (err) {
                 return res.json({ code: 500, msg: 'session error' });
@@ -65,7 +69,7 @@ AuthRouter.post(`${path}/login`, validateDTO(LoginDTO), async (req: Request, res
           }
         }
       })
-      .catch(err => res.status(401).send({ message: err }))
+      .catch(err => { throw new HttpException(401, err)});
 
 
 
@@ -107,7 +111,7 @@ AuthRouter.post(`${path}/login`, validateDTO(LoginDTO), async (req: Request, res
     })(req, res, next);*/
 
   } catch (e) {
-    res.status(500).send({ message: e.message });
+    throw new HttpException(500, e);
   }
 });
 
@@ -116,10 +120,23 @@ AuthRouter.post(`${path}/register`, async (req: Request, res: Response) => {
     const body = req.body;
     console.log("register", body)
     service.register(body)
-      .then(result => res.status(200).send(result))
+      .then(async result => res.status(200).send(result))
       .catch(err => res.status(500).send(err));
   } catch (e) {
     res.status(500).send(e.message);
+  }
+});
+
+AuthRouter.post(`${path}/register/upload/:userId`, uploadSingleImageMiddleware.single("file"), async (req: Request, res: Response) => {
+  try {
+    const userId = req.params.userId;
+    if (req.file) {
+      service.saveUserImage(userId, plainToClass(File, req.file))
+        .then(result => res.status(200).send(result))
+        .catch(err => { throw new HttpException(500, err)});
+    }
+  } catch (e) {
+    new HttpException(500, e.message);
   }
 });
 
@@ -132,6 +149,6 @@ AuthRouter.get(`${path}/logout`, async (req: Request, res: Response) => {
       res.status(201).send({ message: "logout" });
     });
   } catch (e) {
-    res.status(500).send(e.message);
+    throw new HttpException(500, e);
   }
 });

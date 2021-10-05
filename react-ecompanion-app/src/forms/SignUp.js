@@ -29,7 +29,18 @@ export default class SignUp extends Component {
                 console.log(res)
                 setSubmitting(false)
                 if (res) {
-                    window.location.href = "/signin"
+                    let formData =new FormData();
+                    formData.append("file", values.icon)
+                    fetch("http://localhost:3001/auth/register/upload/" + res.id, {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response=> response.json())
+                    .then(res=> {
+                        console.log(res)
+                        window.location.href = "/signin"
+                    })
+                    .catch(err => console.log(err))
                 }
             })
             .catch(err => {

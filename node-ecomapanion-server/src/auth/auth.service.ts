@@ -3,6 +3,8 @@ import { User } from "../modules/model/user.entity";
 import UserService from "../modules/service/user.service";
 import LoginDTO from "./login.dto";
 import bcryptjs from "bcryptjs";
+import { getManager, getRepository } from "typeorm";
+import File from "../modules/model/file.entity";
 /**
  * Export functionality.
  */
@@ -56,11 +58,63 @@ export default class AuthService {
                         data.password = hashPassword;
 
                         this.service.create(data)
-                        .then(result => resolve(result))
+                        .then(async result => {
+                            if(result.identifiers) {
+                                resolve(await this.service.get(result.identifiers[0].id))
+                            }
+                            else reject(result)
+                        })
                         .catch(err => resolve(err))
                     }
                 })
                 .catch(err => reject(err));
+            } catch (error) {
+                reject(error)
+            }
+        });
+    }
+
+    /**
+     * Save File
+     */
+     public async saveUserImage(userId: string, file: File) : Promise<any> {
+        return new Promise<any>(async (resolve, reject) => {
+            try {
+                getRepository(User).findOneOrFail(userId)
+                .then(async user => {
+                    console.log("file", file)
+                    
+                    const newFile = new File();
+                    newFile.originalname = file.originalname;
+                    newFile.filename = file.filename;
+                    newFile.mimetype = file.mimetype;
+                    newFile.ext = file.filename.substr(file.filename.lastIndexOf('.') + 1 );
+                    newFile.path = file.path;
+                    newFile.destination = file.destination;
+                    newFile.size = file.size;
+                    file.createdAt = new Date();
+
+                    let savedFile = await getManager().getRepository(File).insert(newFile);
+
+                    console.log("savedFile" , savedFile)
+
+
+
+                    let res = await getManager().createQueryBuilder()
+                                                .relation(User, 'img')
+                                                .of(user)
+                                                .set(savedFile.identifiers[0].id);
+                    console.log("..>", res)
+
+                                            
+
+
+                    resolve(user)
+                })
+                .catch( err => reject(err))
+
+
+
             } catch (error) {
                 reject(error)
             }

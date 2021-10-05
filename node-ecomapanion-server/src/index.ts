@@ -8,6 +8,7 @@ import "reflect-metadata";
 import { AuthRouter } from './auth/auth.controller';
 import session  from "express-session";
 import authorizationMiddleware from './auth/auth.middleware';
+import path from "path";
 //import passport from 'passport';
 //import passport from './auth/passport.config';
 
@@ -37,7 +38,7 @@ createConnection().then(async connection => {
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
 
-    app.use("/upload", express.static(__dirname + '/upload'));
+    app.use("/uploads", express.static(path.resolve("./") + '/uploads'));
 
     // session config
     app.use(session({ 

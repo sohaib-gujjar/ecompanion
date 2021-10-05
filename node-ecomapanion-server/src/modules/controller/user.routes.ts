@@ -3,6 +3,9 @@ import validateDTO from "../../@base/middleware/validateDTO.middleware";
 import CreateUserDto from "../dto/create-user.dto";
 import UserService from "../service/user.service";
 
+import { join } from 'path';
+import HttpException from "../../@base/exception/HttpException";
+
 /**
  * Router Definition
  */
@@ -137,4 +140,33 @@ router.delete(`${path}/:id`, async (req: Request, res: Response) => {
   } catch (e) {
     res.status(500).send(e.message);
   }
+});
+
+
+/**
+ * @swagger
+ * /user/avatar/{fileName}:
+ *   get:
+ *     description: serve icon
+ *     responses:
+ *       '200':
+ *         description: return file
+ */
+router.get(`${path}/avatar/:fileName`, async (req: Request, res: Response) => {
+
+  const fileName = req.params.fileName;
+  const options = {
+    root: join(__dirname, '../../../../uploads/avatars'),
+    dotfiles: 'deny',
+    headers: {
+      'x-timestamp': Date.now(),
+      'x-sent': true,
+    },
+  };
+
+  res.sendFile(fileName, options, error => {
+    if (error) {
+      return new HttpException(500, `File ${fileName} not found`);
+    }
+  });
 });

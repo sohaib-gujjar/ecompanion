@@ -16,27 +16,27 @@ export class FillData1632155121706 implements MigrationInterface {
     const files = await queryRunner.manager.getRepository<File>(File).save(
       plainToClass(User, [
         {
-          name: 'user.png',
-          path: '/upload/avatars/user.png',
-          type: 'png',
+          filename: 'user.png',
+          path: '/uploads/avatars/user.png',
+          ext: 'png',
           createdAt: new Date()
         },
         {
-          name: 'user_2.png',
-          path: '/upload/avatars/user_2.png',
-          type: 'png',
+          filename: 'user_2.png',
+          path: '/uploads/avatars/user_2.png',
+          ext: 'png',
           createdAt: new Date()
         },
         {
-          name: 'user_3.png',
-          path: '/upload/avatars/user_3.png',
-          type: 'png',
+          filename: 'user_3.png',
+          path: '/uploads/avatars/user_3.png',
+          ext: 'png',
           createdAt: new Date()
         },
         {
-          name: 'user_4.png',
-          path: '/upload/avatars/user_4.png',
-          type: 'png',
+          filename: 'user_4.png',
+          path: '/uploads/avatars/user_4.png',
+          ext: 'png',
           createdAt: new Date()
         },
       ]),

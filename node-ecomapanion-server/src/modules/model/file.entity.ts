@@ -5,14 +5,26 @@ import { User } from "./user.entity";
 
 @Entity()
 export default class File extends AbstractEntity {
+    @Column({ nullable: true})
+    originalname: string;
+
     @Column()
-    name: string;
+    filename: string;
+
+    @Column({ nullable: true})
+    mimetype: string;
 
     @Column()
     path: string;
 
-    @Column()
-    type: string;
+    @Column({ nullable: true})
+    destination: string;
+
+    @Column({ nullable: true})
+    ext: string;
+
+    @Column({ nullable: true})
+    size: number;
 
     @OneToOne(() => User, user => user.img) 
     user: User;
