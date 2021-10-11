@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Formik, Form } from "formik";
-import { DateInput, DropDownInput, ImageUploader, RadioGroup, TermsConditions, TextAreaInput, TextInput } from "../component/formikComponents";
+import { DateInput, DropDownInput, ImageUploader, RadioGroup, TermsConditions, TextAreaInput, TextInput, DescriptionEditor } from "../component/formikComponents";
+import { EditorState } from 'draft-js';
 
 export default class SignUp extends Component {
 
@@ -65,7 +66,8 @@ export default class SignUp extends Component {
                         tags: [],
                         terms: false, 
                         workspace: null,
-                        dob: "2000-01-01"
+                        dob: "2000-01-01",
+                        editorState: EditorState.createEmpty()
                     }}
                     validate={values => {
                         const errors = {};
@@ -135,6 +137,10 @@ export default class SignUp extends Component {
                                 title="Gender" value="gender" onChange={formProps.setFieldValue} 
                                 options={[{id: 1, label: "male"}, {id: 2, label: "female"}]}
                             />
+
+                            <DescriptionEditor
+                                editorState={formProps.values.editorState}
+                                onChange={formProps.setFieldValue}/>
                             
                             {/*<CustomInputTagsDropdown
                                 title="Tags"

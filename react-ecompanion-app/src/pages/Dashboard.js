@@ -1,10 +1,17 @@
 import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { Col, Container, Row, Button, Dropdown, FormControl, ButtonGroup } from "react-bootstrap";
-import Header from "../component/Header";
+import { Col, Container, Row, Dropdown, FormControl } from "react-bootstrap";
 import '../styles/dashboard.scss';
 import _ from 'lodash';
 import { UserContext } from '../context/UserContext';
 import '../styles/emoji.scss';
+import { DescriptionEditor } from "../component/formikComponents";
+import { EditorState } from "draft-js";
+import { convertToHTML } from "draft-convert";
+import { Grid, AppBar, Avatar, Box, Divider, IconButton, List, ListItem, Toolbar, Typography, CircularProgress, Button } from "@mui/material";
+import { Menu, Search, Send as SendIcon } from "@mui/icons-material";
+import AccountMenu from "../component/dashboard/AccountMenu";
+import { getFromServer, postToServer } from "../services/api";
+import { NavLink } from "react-router-dom";
 
 export default function Dashboard() {
 
@@ -19,44 +26,26 @@ export default function Dashboard() {
 
     /*************************************************         */
     const getWorkspaces = useCallback(async (user) => {
-        fetch("http://localhost:3001/slack/getUserWorkspace/" + user, {
-            method: 'GET'
-        })
-            .then(response => response.json())
+        getFromServer("slack/getUserWorkspace/" + user, context)
             .then(res => {
                 setWorkspace(res)
             })
-            .catch(err => {
-                console.log(err.message)
-                alert(err)
-            })
+            .catch(err => console.log(err))
     }, [])
 
     const getUserTeams = (user) => {
-        fetch("http://localhost:3001/slack/getUserTeams/" + user, {
-            method: 'GET'
-        })
-            .then(response => response.json())
+        getFromServer("slack/getUserTeams/" + user, context)
             .then(res => {
                 setTeamsJoined(res)
             })
-            .catch(err => {
-                console.log(err.message)
-                alert(err)
-            })
+            .catch(err => console.log(err))
     }
     const getUserDirectChats = (user) => {
-        fetch("http://localhost:3001/slack/getUserDirectChats/" + user, {
-            method: 'GET'
-        })
-            .then(response => response.json())
+        getFromServer("slack/getUserDirectChats/" + user, context)
             .then(res => {
                 setContacts(res)
             })
-            .catch(err => {
-                console.log(err.message)
-                alert(err)
-            })
+            .catch(err => console.log(err))
     }
     /**************************************************          */
 
@@ -81,55 +70,42 @@ export default function Dashboard() {
 
     function onContactChange(e, d) {
         const current_user = context.user.id;
-        fetch("http://localhost:3001/slack/getDM/" + current_user + "/" + d.id, {
-            method: 'GET'
-        })
-            .then(response => response.json())
+        getFromServer("slack/getDM/" + current_user + "/" + d.id, context)
             .then(res => {
                 setMessages({ contact: d, messages: res })
             })
-            .catch(err => {
-                console.log(err.message)
-                alert(err)
-            })
+            .catch(err => console.log(err))
     }
     function onTeamChange(e, d) {
-        fetch("http://localhost:3001/slack/getTeamsChat/" + d.id, {
-            method: 'GET'
-        })
-            .then(response => response.json())
+
+        getFromServer("slack/getTeamsChat/" + d.id, context)
             .then(res => {
                 setMessages({ team: d, messages: res })
             })
-            .catch(err => {
-                console.log(err.message)
-                alert(err)
-            })
+            .catch(err => console.log(err))
     }
     function onChannelChange(e, d) {
-        fetch("http://localhost:3001/slack/getWorkspaceChat/" + d.id, {
-            method: 'GET'
-        })
-            .then(response => response.json())
+        getFromServer("slack/getWorkspaceChat/" + d.id, context)
             .then(res => {
                 setMessages({ workspace: d, messages: res })
             })
-            .catch(err => {
-                console.log(err.message)
-                alert(err)
-            })
+            .catch(err => console.log(err))
     }
 
     /*************************************************         */
 
-    const sendMessage = useCallback(async (message, text) => {
+    const sendMessage = useCallback(async (message, text, cb) => {
         if (message.contact) {
             const body = {
                 text: text,
                 sender: context.user,
                 receiver: message.contact
             }
-            sendDirectMessage(body)
+            postToServer("slack/userMessage", body, context)
+                .then(res => {
+                    onContactChange(null, body.receiver)
+                })
+                .catch(err => console.log(err))
         }
         else if (message.team) {
             const body = {
@@ -137,7 +113,11 @@ export default function Dashboard() {
                 user: context.user,
                 teams: message.team
             }
-            sendTeamsMessage(body)
+            postToServer("slack/teamsMessage", body, context)
+                .then(res => {
+                    onTeamChange(null, body.teams)
+                })
+                .catch(err => console.log(err))
         }
         else if (message.workspace) {
             const body = {
@@ -145,78 +125,22 @@ export default function Dashboard() {
                 user: context.user,
                 workspace: message.workspace
             }
-            sendWorkspaceMessage(body);
+            postToServer("slack/workspaceMessage", body, context)
+                .then(res => {
+                    onChannelChange(null, body.workspace)
+                })
+                .catch(err => console.log(err))
         }
     })
 
-
-    const sendWorkspaceMessage = useCallback(async (body) => {
-        fetch("http://localhost:3001/slack/workspaceMessage", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(body)
-        })
-            .then(response => { if (response.status === 200) { response.json() } else throw response.json() })
-            .then(res => {
-                onChannelChange(null, body.workspace)
-            })
-            .catch(err => {
-                console.log(err.message)
-                alert(err)
-            })
-    }, [])
-
-    const sendTeamsMessage = (body) => {
-        fetch("http://localhost:3001/slack/teamsMessage", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(body)
-        })
-            .then(response => { if (response.status === 200) { response.json() } else throw response.json() })
-            .then(res => {
-                onTeamChange(null, body.teams)
-            })
-            .catch(err => {
-                console.log(err.message)
-                alert(err)
-            })
-    }
-    const sendDirectMessage = (body) => {
-        fetch("http://localhost:3001/slack/userMessage", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(body)
-        })
-            .then(response => { if (response.status === 200) { response.json() } else throw response })
-            .then(res => {
-                /*let message = _.clone(messages);
-                message.messages.push({
-
-                })
-                setMessages(message)*/
-                onContactChange(null, body.receiver)
-
-            })
-            .catch(err => {
-                console.log(err)
-                alert(err)
-            })
-    }
     /**************************************************          */
 
     return (
-        <Container className="slack-window" >
-            <Row>
-                <Header />
-            </Row>
-            <Row style={{ height: "90vh", marginTop: 0, marginBottom: 0 }}>
-                <Col sm={3} md={3} lg={3} className="slack-user-window" style={{overflow: "auto", height: "100%"}}>
+        <>
+            <MaterialHeader />
+
+            <Grid container className="slack-window" style={{ height: "calc(100vh - 70px)", marginTop: 0, marginBottom: 0 }}>
+                <Grid item xs={4} md={3} lg={2} className="slack-user-window" style={{ overflow: "auto", height: "100%" }}>
                     <TeamsAndContacts
                         contacts={contacts}
                         channelJoined={workspace}
@@ -225,53 +149,55 @@ export default function Dashboard() {
                         onChannelChange={onChannelChange}
                         onContactChange={onContactChange}
                     />
-                </Col>
-                <Col sm={9} md={9} lg={9} className="slack-body">
+                </Grid>
+                <Grid item xs={8} md={9} lg={10} className="slack-body">
+
                     <ChatPanel chats={messages} />
                     <ChatFooterPanel message={messages} onSend={sendMessage} />
-                </Col>
-            </Row>
-        </Container>
+                </Grid>
+            </Grid>
+        </>
     );
 }
 
 function TeamsAndContacts({ teamsJoined, channelJoined, contacts, onContactChange, onTeamChange, onChannelChange }) {
 
     return (
-        <>
-            <div className="team-name">
-                <span>Workspace</span>
-                <div className="list">
-                    {_.map(channelJoined, (data, i) => {
-                        return <span className="list-item" key={"channel" + i} onClick={(e) => onChannelChange(e, data)}>#&nbsp;&nbsp;{data.name}</span>
-                    })}
-                </div>
-            </div>
-            <div className="team-name">
-                <span>Team Name</span>
-                <div className="list">
-                    {_.map(teamsJoined, (data, i) => {
-                        return <span className="list-item" key={"tname" + i} onClick={(e) => onTeamChange(e, data)}>#&nbsp;&nbsp;{data.name}</span>
-                    })}
-                </div>
-            </div>
-            <div className="team-name">
-                <span>Direct message</span>
-                <div className="list">
-                    {_.map(contacts, (data, i) => {
-                        return (
-                            <div key={"dm" + i} style={{ display: "block"}}>
-                                <span className={i % 2 === 0 ? "status" : "status active"}/>
-                                <span className="list-item" onClick={(e) => onContactChange(e, data)}>
-                                    {data.firstName + ' ' + data.lastName}
-                                </span>
-                            </div>
+        <Box sx={{ overflow: 'auto' }}>
+            <List>
+                <Typography variant="h6">Workspace</Typography>
+                {_.map(channelJoined, (data, i) => {
+                    return (
+                        <ListItem button key={"channel" + i} onClick={(e) => onChannelChange(e, data)}>
+                            <span className="list-item" >#&nbsp;&nbsp;{data.name}</span>
+                        </ListItem>
                         )
-                    })}
-                </div>
-            </div>
+                })}
+            </List>
+            <Divider style={{ background: 'white' }} variant="middle" />
+            <List>
+                <Typography variant="h6">Team Name</Typography>
+                {_.map(teamsJoined, (data, i) => {
+                    return (<ListItem button key={"tname" + i} onClick={(e) => onTeamChange(e, data)}><span className="list-item">#&nbsp;&nbsp;{data.name}</span></ListItem>)
+                })}
+            </List>
+            <Divider style={{ background: 'white' }} variant="middle" />
+            <List>
+                <Typography variant="h6">Direct message</Typography>
+                {_.map(contacts, (data, i) => {
+                    return (
+                        <ListItem button key={"dm" + i} onClick={(e) => onContactChange(e, data)}>
+                            <span className={i % 2 === 0 ? "status" : "status active"} />
+                            <span className="list-item">
+                                {data.firstName + ' ' + data.lastName}
+                            </span>
+                        </ListItem>
+                    )
+                })}
+            </List>
+            <Divider style={{ background: 'white' }} variant="middle" />
             <UserSearch />
-        </>
+        </Box>
     );
 }
 
@@ -279,35 +205,68 @@ function TeamsAndContacts({ teamsJoined, channelJoined, contacts, onContactChang
 function ChatFooterPanel({ message, onSend }) {
 
     const context = useContext(UserContext);
-    const inputRef = useRef(null);
+    const [loading, setLoading] = useState(false);
+
+    const [editorState, setEditorState] = useState(() =>
+        EditorState.createEmpty(),
+    );
 
     let placeholder = message.workspace ? "Workspace: " + message.workspace.name : (message.team ? "Team: " + message.team.name : (message.contact ? "To :" + message.contact.email : ""));
 
     useEffect(() => {
-        inputRef.current.value = ""
-    }, [])
+        setEditorState(() =>
+            EditorState.createEmpty(),
+        )
+        setLoading(false);
+    }, [message, loading])
 
     return (
         <>
             <Row className="chat-panel-footer">
                 <Col sm={1}>
-                    <div className="chat-icon" style={{paddingTop: "0"}}>
+                    <div className="chat-icon" style={{ paddingTop: "0" }}>
                         {
-                        context.user && (
-                            context.user.img ? 
-                            <img className="chat-icon" style={{paddingTop: "0"}} src={`http://localhost:3001${context.user.img.path}`} />
-                            :
-                            <span>{context.user.firstName.substr(0, 1).toUpperCase() + '' + context.user.lastName.substr(0, 1).toUpperCase()}</span>
-                        )}
+                            context.user && (
+                                context.user.img ?
+                                    <img className="chat-icon" style={{ paddingTop: "0" }} src={`http://localhost:3001/${context.user.img.path}`} />
+                                    :
+                                    <span>{context.user.firstName.substr(0, 1).toUpperCase() + '' + context.user.lastName.substr(0, 1).toUpperCase()}</span>
+                            )}
                     </div>
                 </Col>
                 <Col sm={11}>
                     <Row>
                         <Col sm={11}>
-                            <textarea ref={inputRef} id="btn-input" type="textarea" rows="3" className="form-control input-sm" placeholder={placeholder} />
+                            {/*<textarea ref={inputRef} id="btn-input" type="textarea" rows="3" className="form-control input-sm" placeholder={placeholder} />*/}
+                            <DescriptionEditor
+                                editorState={editorState}
+                                placeholder={placeholder}
+                                onChange={(v, val) => setEditorState(val)} />
                         </Col>
                         <Col sm={1}>
-                            <Button variant="outline-danger" onClick={() => { if (inputRef.current.value === "" || !message.messages) { alert("Error") } else { onSend(message, inputRef.current.value); inputRef.current.value = ""; } }}>Send</Button>
+                            {/*<Button variant="outline-danger" onClick={() => { if (inputRef.current.value === "" || !message.messages) { alert("Error") } else { onSend(message, inputRef.current.value); inputRef.current.value = ""; } }}>Send</Button>*/}
+                            {/*<Button variant="outline-danger" onClick={() => {
+                                    onSend(message, convertToHTML(editorState.getCurrentContent()));
+                                    setEditorState(() => EditorState.createEmpty(), ) }} >Send</Button>*/}
+                            <Button
+                                onClick={() => {
+                                    if (message.contact || message.team || message.workspace) {
+
+
+                                        onSend(message, convertToHTML(editorState.getCurrentContent()));
+                                        setLoading(true);
+                                    }
+                                    else {
+                                        alert("Select domain")
+                                    }
+                                }}
+                                endIcon={<SendIcon />}
+                                disabled={loading}
+                                variant="contained"
+                            >
+                                {loading && <CircularProgress size={14} />}
+                                {!loading && 'Send'}
+                            </Button>
 
                         </Col>
                     </Row>
@@ -318,9 +277,15 @@ function ChatFooterPanel({ message, onSend }) {
 }
 
 function ChatPanel({ chats }) {
+
+    let ref = useRef(null);
+
+    useEffect(() => {
+        ref.scrollIntoView({ behavior: "smooth" });
+    }, []);
     return (
         <div className="panel-body">
-            <div style={{ float: "right", fontSize: "xx-small" }}>{chats.workspace ? <span>Workspace: {chats.workspace.name}</span> : (chats.team ? <span>Team: {chats.team.name}</span> : (chats.contact ? <span>User: {chats.contact.email}</span> : null))}</div>
+            <div ref={(el) => { ref = el; }} style={{ float: "right", fontSize: "xx-small" }}>{chats.workspace ? <span>Workspace: {chats.workspace.name}</span> : (chats.team ? <span>Team: {chats.team.name}</span> : (chats.contact ? <span>User: {chats.contact.email}</span> : null))}</div>
             {
                 _.map(chats.messages, (chat, i) => {
                     return <Chat key={'chat' + i} chat={chat} />
@@ -339,22 +304,23 @@ function Chat({ chat }) {
             <Row>
                 <Col sm={1}>
                     {
-                        chat.user.img ? 
-                        <img className="img-circle" style={{paddingTop: "0"}} src={`http://localhost:3001${chat.user.img.path}`} />
-                        :
-                        <div className="img-circle"><span>{chat.user.firstName.substr(0, 1).toUpperCase() + '' + chat.user.lastName.substr(0, 1).toUpperCase()}</span></div>
+                        chat.user.img ?
+                            <img className="img-circle" style={{ paddingTop: "0" }} src={`http://localhost:3001/${chat.user.img.path}`} />
+                            :
+                            <div className="img-circle"><span>{chat.user.firstName.substr(0, 1).toUpperCase() + '' + chat.user.lastName.substr(0, 1).toUpperCase()}</span></div>
                     }
                 </Col>
-                <Col sm={10}>
-                    <p><strong className="">{chat.user.firstName + ' ' + chat.user.lastName}</strong></p>
-                    <p><small className="time-status"><span className="status active"></span>{timeSince(chat.createdAt)}</small></p>
+                <Col sm={11}>
+                    <Row>
+                        <span>
+                            <strong className="">{chat.user.firstName + ' ' + chat.user.lastName}</strong>
+                            <small className="time-status"><span className="status active"></span>{timeSince(chat.createdAt)}</small>
+                        </span>
+                    </Row>
+                    <Row style={{ color: "#545454" }}>
+                        <div dangerouslySetInnerHTML={{ __html: chat.text }} />
+                    </Row>
                 </Col>
-            </Row>
-            <Row style={{ padding: "2% 0", margin: "0", color: "#545454" }}>
-                <p>
-                    {chat.text}
-                </p>
-
             </Row>
         </Container>
     );
@@ -368,87 +334,84 @@ function Chat({ chat }) {
 // Dropdown needs access to the DOM node in order to position the Menu
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
     <a
-      href=""
-      ref={ref}
-      style={{ textDecoration: "none", color: "lightgray", fontSize: "larger"}}
-      onClick={(e) => {
-        e.preventDefault();
-        onClick(e);
-      }}
+        href=""
+        ref={ref}
+        style={{ textDecoration: "none", color: "lightgray", fontSize: "larger" }}
+        onClick={(e) => {
+            e.preventDefault();
+            onClick(e);
+        }}
     >
-      {children}
-      &#x25bc;
+        {children}
+        &#x25bc;
     </a>
-  ));
-  
-  // forwardRef again here!
-  // Dropdown needs access to the DOM of the Menu to measure it
-  const CustomMenu = React.forwardRef(
-    ({ children, style, className, 'aria-labelledby': labeledBy }, ref) => {
-      const [value, setValue] = useState([]);
+));
 
-      function getUsers (event, text) {
-          if(text.length < 3) {
-              setValue([])
-              return
-          }
-          fetch("http://localhost:3001/slack/user/search/" + text, {
-            method: 'GET'
+// forwardRef again here!
+// Dropdown needs access to the DOM of the Menu to measure it
+const CustomMenu = React.forwardRef(
+    ({ children, style, className, 'aria-labelledby': labeledBy }, ref) => {
+        const [value, setValue] = useState([]);
+
+        function getUsers(event, text) {
+            if (text.length < 3) {
+                setValue([])
+                return
+            }
+            fetch("http://localhost:3001/slack/user/search/" + text, {
+                method: 'GET'
             })
-            .then(response => response.json()/*{ if(response.status === "200") {return response.json();} else{ throw new Error(response);}}*/)
-            .then(res => {
-                setValue(res)
-            })
-            .catch(err => {
-                console.log(err)
-            })
-      }
-  
-      return (
-        <div
-          ref={ref}
-          style={style}
-          className={className}
-          aria-labelledby={labeledBy}
-        >
-          <FormControl
-            autoFocus
-            className="mx-3 my-2 w-auto"
-            placeholder="Type user name ..."
-            onChange={(e) => getUsers(e, e.target.value)}
-            //value={value}
-          />
-          <ul className="list-unstyled">
-              {
-                  value.map((user, i) => {
-                      return <Dropdown.Item eventKey={i}>{user.firstName + ' ' + user.lastName}</Dropdown.Item>
-                  })
-              }
-            {/*React.Children.toArray(children).filter(
+                .then(response => response.json()/*{ if(response.status === "200") {return response.json();} else{ throw new Error(response);}}*/)
+                .then(res => {
+                    setValue(res)
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        }
+
+        return (
+            <div
+                ref={ref}
+                style={style}
+                className={className}
+                aria-labelledby={labeledBy}
+            >
+                <FormControl
+                    autoFocus
+                    className="mx-3 my-2 w-auto"
+                    placeholder="Type user name ..."
+                    onChange={(e) => getUsers(e, e.target.value)}
+                //value={value}
+                />
+                <ul className="list-unstyled">
+                    {
+                        value.map((user, i) => {
+                            return <Dropdown.Item key={i} eventKey={user.id}>{user.firstName + ' ' + user.lastName}</Dropdown.Item>
+                        })
+                    }
+                    {/*React.Children.toArray(children).filter(
               (child) =>
                 !value || child.props.children.toLowerCase().startsWith(value),
             )*/}
-          </ul>
-        </div>
-      );
+                </ul>
+            </div>
+        );
     },
-  );
+);
 
 function UserSearch() {
-    return(
-        <div style={{ marginTop: "10%"}}>
-            <Dropdown>
-                <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
-                Search user
-                </Dropdown.Toggle>
 
+    function onItemSelect(event) {
+        console.log(event)
+    }
+    return (
+        <div style={{ marginTop: "10%" }}>
+            <Dropdown onSelect={e => onItemSelect(e)}>
+                <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
+                    Search user
+                </Dropdown.Toggle>
                 <Dropdown.Menu as={CustomMenu}>
-                {/*<Dropdown.Item eventKey="1">Red</Dropdown.Item>
-                <Dropdown.Item eventKey="2">Blue</Dropdown.Item>
-                <Dropdown.Item eventKey="3" active>
-                    Orange
-                </Dropdown.Item>
-    <Dropdown.Item eventKey="1">Red-Orange</Dropdown.Item>*/}
                 </Dropdown.Menu>
             </Dropdown>
         </div>
@@ -487,4 +450,61 @@ function timeSince(date) {
         return Math.floor(interval) + " minutes";
     }
     return Math.floor(seconds) + " seconds";
+}
+
+
+
+
+function MaterialHeader() {
+    return (
+        <Box sx={{ flexGrow: 1 }}>
+            <AppBar position="static" sx={{ backgroundColor: "darkblue"}}>
+                <Toolbar variant="dense">
+                    {/*<IconButton
+                        size="large"
+                        edge="start"
+                        color="inherit"
+                        aria-label="open drawer"
+                        sx={{ mr: 2 }}
+                    >
+                        <Menu />
+                    </IconButton>*/}
+                    <Avatar sx={{ margin: "15px 0"}} src="favicon.ico" component={NavLink} to="/" />
+                    <Typography variant="h5" color="inherit" component="div" style={{ marginLeft: "10px", flexGrow: 1 }}>
+                        E Companion
+                    </Typography>
+                    <IconButton size="large" aria-label="search" color="inherit">
+                        <Search />
+                    </IconButton>
+
+                    <AccountMenu />
+                </Toolbar>
+            </AppBar>
+        </Box>
+    )
+}
+
+
+function MaterialBody() {
+    return (
+        <Box sx={{ flexGrow: 1 }}>
+
+        </Box>
+    )
+}
+
+function MaterialSidePanel() {
+    return (
+        <Box sx={{ flexGrow: 1 }}>
+
+        </Box>
+    )
+}
+
+function MaterialChatPanel() {
+    return (
+        <Box sx={{ flexGrow: 1 }}>
+
+        </Box>
+    )
 }

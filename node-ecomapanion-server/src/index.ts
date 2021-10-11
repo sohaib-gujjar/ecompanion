@@ -7,6 +7,7 @@ import { createConnection } from "typeorm";
 import "reflect-metadata";
 import { AuthRouter } from './auth/auth.controller';
 import session  from "express-session";
+import bodyParser from 'body-parser';
 import authorizationMiddleware from './auth/auth.middleware';
 import path from "path";
 //import passport from 'passport';
@@ -38,12 +39,16 @@ createConnection().then(async connection => {
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
 
+    app.use(bodyParser.json());
+
     app.use("/uploads", express.static(path.resolve("./") + '/uploads'));
 
     // session config
+    var MemoryStore =session.MemoryStore;
     app.use(session({ 
         secret: process.env.SESSION_KEY,
-        cookie: { secure: false, maxAge: 60000 , httpOnly: false}, 
+        store: new MemoryStore(),
+        cookie: { secure: false, expires: new Date(Date.now() + (30 * 86400 * 1000)), maxAge: 60000 , httpOnly: false}, 
         resave: false, // save session if unmodified
         saveUninitialized: true // create session until something stored
     }));

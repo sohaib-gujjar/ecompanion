@@ -17,25 +17,25 @@ export class FillData1632155121706 implements MigrationInterface {
       plainToClass(User, [
         {
           filename: 'user.png',
-          path: '/uploads/avatars/user.png',
+          path: 'uploads/avatars/user.png',
           ext: 'png',
           createdAt: new Date()
         },
         {
           filename: 'user_2.png',
-          path: '/uploads/avatars/user_2.png',
+          path: 'uploads/avatars/user_2.png',
           ext: 'png',
           createdAt: new Date()
         },
         {
           filename: 'user_3.png',
-          path: '/uploads/avatars/user_3.png',
+          path: 'uploads/avatars/user_3.png',
           ext: 'png',
           createdAt: new Date()
         },
         {
           filename: 'user_4.png',
-          path: '/uploads/avatars/user_4.png',
+          path: 'uploads/avatars/user_4.png',
           ext: 'png',
           createdAt: new Date()
         },

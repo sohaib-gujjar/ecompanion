@@ -12,5 +12,5 @@ export * from './InputFileComponents'
 export * from './RangeSlider'
 export * from './CustomInputTagsDropdown'
 export * from './ImageUploader'
-
+export * from './DescriptionEditor'
 

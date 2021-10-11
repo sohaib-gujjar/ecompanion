@@ -26,49 +26,22 @@
 .slack-user-window {
   background-color: #4d394b;
   color: #fafafa;
-  width: 33%;
 
   padding: 1% 1% !important; 
-  .team-name {
-    display: block;
-    text-overflow: ellipsis;
-    //overflow: auto;
-    white-space: nowrap;
-    font-weight: 700;
-    font-size: 1rem;
-    margin-top: 4%;
 
-    .list {
-      margin-top: 4%;
-      color: lightgray;
-      padding-left: 5%;
-      display: flex;
-      flex-direction: column;
+  .status {
+    background-color: transparent;
+    border: 2px gray solid;
+    border-radius: 50%;
+    width: 10px;
+    height: 10px;
+    display: inline-block;
 
-      .status {
-        background-color: transparent;
-        border: 2px gray solid;
-        border-radius: 50%;
-        width: 10px;
-        height: 10px;
-        display: inline-block;
-      }
-      .active {
-        background-color: green;
-        border: none;
-      }
-
-      .list-item {
-        font-weight: 500;
-        padding: 5px;
-        cursor: pointer;
-        
-        &:hover {
-          color: gray;
-          background-color: rgba(0,0,0,0.1);
-        }
-      }
-    }
+    margin-right: 10px;
+  }
+  .active {
+    background-color: green;
+    border: none;
   }
 }
 
@@ -79,10 +52,10 @@
   background-color: #fafafa;
 
   .panel-body {
-    margin: 1% 5%;
+    margin: 1% 1%;
     overflow: auto;
-    min-height: 70vh;
-    max-height: 70vh;
+    min-height: 60vh;
+    max-height: 65vh;
     padding: 2%;
     box-shadow: 2px 2px 5px 1px rgba(0,0,0,0.1);
 
@@ -106,17 +79,9 @@
     .chat
     {
         list-style: none;
-        margin: 0;
+        margin: 1% 0;
         padding: 0;
-
-        .row{
-          align-items: center;
-        }
-
-        p {
-          margin: 0;
-          padding: 0;
-        }
+        
         .img-circle {
           background-color: greenyellow;
           width: 50px;
@@ -130,6 +95,7 @@
 
         .time-status {
           color: #777777;
+          margin-left: 10px;
           .status {
             height: 10px;
             width: 10px;
@@ -145,7 +111,7 @@
     }
 
     .reply {
-      padding-left: 1%;
+      padding-left: 3%;
 
       .img-circle {
         background-color: lightgray;
@@ -154,8 +120,7 @@
   }
 
   .chat-panel-footer {
-    margin: 3% 5% 0 5%;
-    align-items: center;
+    margin: 2% 5% 0 5%;
 
     .chat-icon {
           background-color: rgba(93, 136, 236, 0.1);
