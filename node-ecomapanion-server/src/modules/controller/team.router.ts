@@ -2,10 +2,11 @@ import { plainToClass } from 'class-transformer';
 import * as express from 'express';
 import validateDTO from '../../@base/middleware/validateDTO.middleware';
 import CreateTeamsDTO from '../dto/create-teams.dto';
+import { User } from '../model/user.entity';
 import TeamService from '../service/teams.service';
 
 export default class TeamController {
-    public path = '/slack/team';
+    public path = '/team';
     public router = express.Router();
     private service = new TeamService();
 
@@ -20,7 +21,7 @@ export default class TeamController {
 
     public initializeRoutes() {
         this.router.get(`${this.path}`, this.getAll);
-        this.router.get(`${this.path}/user/:id`, this.getUserWorkspace);
+        this.router.get(`${this.path}/user`, this.getUserWorkspace);
         
         this.router.post(`${this.path}`, validateDTO(CreateTeamsDTO), this.create);
         this.router.put(`${this.path}`, validateDTO(CreateTeamsDTO), this.update);
@@ -41,8 +42,8 @@ export default class TeamController {
 
     getUserWorkspace = async (req: express.Request, res: express.Response) => {
         try {
-            const id = req.params.id;
-            const item: any = await this.service.getUserWorkspaceTeams(id);
+            const user = plainToClass(User, req.user);
+            const item: any = await this.service.getUserWorkspaceTeams(user.id);
             res.status(200).send(item);
         } catch (e) {
             res.status(500).send(e.message);

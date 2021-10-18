@@ -2,10 +2,11 @@ import { plainToClass } from 'class-transformer';
 import * as express from 'express';
 import validateDTO from '../../@base/middleware/validateDTO.middleware';
 import CreateWorkspaceDTO from '../dto/create-work-space.dto';
+import { User } from '../model/user.entity';
 import WorkspaceService from '../service/workspace.service';
 
 export default class WorkspaceController {
-    public path = '/slack/workspace';
+    public path = '/workspace';
     public router = express.Router();
     private service = new WorkspaceService();
 
@@ -20,7 +21,7 @@ export default class WorkspaceController {
 
     public initializeRoutes() {
         this.router.get(`${this.path}`, this.getAll);
-        this.router.get(`${this.path}/user/:id`, this.getUserWorkspace);
+        this.router.get(`${this.path}/user`, this.getUserWorkspace);
         this.router.get(`${this.path}/search/:string`, this.searchByName);
         
         this.router.post(`${this.path}`, validateDTO(CreateWorkspaceDTO), this.create);
@@ -42,8 +43,8 @@ export default class WorkspaceController {
 
     getUserWorkspace = async (req: express.Request, res: express.Response) => {
         try {
-            const id = req.params.id;
-            const item: any = await this.service.getUserWorkspace(id);
+            const user = plainToClass(User, req.user);
+            const item: any = await this.service.getUserWorkspace(user.id);
             res.status(200).send(item);
         } catch (e) {
             res.status(500).send(e.message);

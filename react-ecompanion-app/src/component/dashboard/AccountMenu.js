@@ -1,5 +1,5 @@
 import { Avatar, Box, Divider, Grid, IconButton, Badge, ListItemIcon, Menu, MenuItem, Tooltip, Typography, MenuList } from "@mui/material";
-import { Notifications as NotificationsIcon, Logout, Add as AddIcon, Settings, StoreMallDirectory, Person } from "@mui/icons-material";
+import { Notifications as NotificationsIcon, Logout, Add as AddIcon, Settings, StoreMallDirectory, Person, Snooze, ManageAccounts, AccountBox } from "@mui/icons-material";
 import { useContext, useEffect, useState } from "react";
 import { NavLink, useHistory } from "react-router-dom";
 import { UserContext } from "../../context/UserContext";
@@ -51,8 +51,8 @@ export default function AccountMenu() {
         <Tooltip title="Account settings">
           <IconButton onClick={handleClick} size="large" sx={{ ml: 2 }}>
             {/*<Avatar sx={{ fontSize: "1rem", textTransform: "uppercase" }}>{user.firstName.substr(0, 1) + '' + user.lastName.substr(0, 1)}</Avatar>*/}
-            <Person sx={{ width:32, height: 32, color: "white"}} />
-            <Typography style={{ padding: "0 5%", textTransform: "capitalize",color: "white",  whiteSpace: "nowrap"}}>{user.firstName + ' ' + user.lastName}</Typography>
+            <Person sx={{ width: 32, height: 32, color: "white" }} />
+            <Typography style={{ padding: "0 5%", textTransform: "capitalize", color: "white", whiteSpace: "nowrap" }}>{user.firstName + ' ' + user.lastName}</Typography>
 
           </IconButton>
         </Tooltip>
@@ -94,9 +94,9 @@ export default function AccountMenu() {
       >
 
 
-        <Grid container spacing={2} style={{ color: "darkblue", padding: "5% 10%" }}>
+        <Grid container spacing={2} style={{ color: "#555", padding: "5% 10%" }}>
           <Grid item xs={8}>
-            <h5 className="nav-user-name" style={{textTransform: "capitalize"}}>{user.firstName + ' ' + user.lastName}</h5>
+            <h5 className="nav-user-name" style={{ textTransform: "capitalize" }}>{user.firstName + ' ' + user.lastName}</h5>
 
             <span className="status"></span>
             <span className="ml-2">Available</span>
@@ -114,15 +114,33 @@ export default function AccountMenu() {
 
         <Box style={{ margin: "5% 0" }}>
 
+          <Divider />
+
+          <MenuItem >
+            <ListItemIcon>
+              <Snooze fontSize="small" />
+            </ListItemIcon>
+            Set Status
+          </MenuItem>
+
+          <Divider />
 
           <MenuItem component={NavLink} to="/profile">
-            <Avatar /> Profile
+            <ListItemIcon>
+              <AccountBox fontSize="small" />
+            </ListItemIcon>
+            Profile
           </MenuItem>
           <MenuItem component={NavLink} to="/profile">
-            <Avatar /> My account
+            <ListItemIcon>
+              <ManageAccounts fontSize="small" />
+            </ListItemIcon>
+            My account
           </MenuItem>
+
           <Divider />
-          <MenuItem component={NavLink} to="/add">
+
+          <MenuItem component={NavLink} to="/add-work-space">
             <ListItemIcon>
               <AddIcon fontSize="small" />
             </ListItemIcon>

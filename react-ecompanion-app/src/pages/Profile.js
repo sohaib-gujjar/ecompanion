@@ -3,6 +3,7 @@ import { Container, Row, Table, Button } from "react-bootstrap";
 import Header from "../component/Header";
 import { UserContext } from "../context/UserContext";
 import _ from "lodash";
+import { getFromServer, postToServer } from "../services/api";
 
 export default function Profile() {
 
@@ -20,11 +21,7 @@ export default function Profile() {
     }, [])
 
     function loadWorkSpaces() {
-        let user = context.user;
-        fetch("http://localhost:3001/slack/workspace/user/" + user.id, {
-            method: 'GET'
-        })
-            .then(response => response.json()/*{ if(response.status === "200") {return response.json();} else{ throw new Error(response);}}*/)
+        getFromServer("workspace/user", context)
             .then(res => {
                 setWorkspace(res)
             })
@@ -35,11 +32,8 @@ export default function Profile() {
 
     function loadTeams() {
         let user = context.user;
-        fetch("http://localhost:3001/slack/team/user/" + user.id, {
-            method: 'GET'
-        })
-            .then(response => response.json()/*{ if(response.status === "200") {return response.json();} else{ throw new Error(response);}}*/)
-            .then(res => {
+        getFromServer("team/user" , context)
+        .then(res => {
                 setTeams(res)
             })
             .catch(err => {
@@ -69,35 +63,19 @@ function Workspace({ workspace, load }) {
 
     function joinWS(event, data) {
         let user = context.user;
-        fetch("http://localhost:3001/slack/workspace/join/"+ data.id+ "/"+ user.id, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(res => res.json())
+        postToServer("workspace/join/"+ data.id+ "/"+ user.id, {}, context)
             .then(res => {
                 load()
             })
-            .catch(err => {
-                alert(JSON.stringify( err))
-            })
+            .catch(err => console.error(err))
     }
     function removeWS(event, data) {
         let user = context.user;
-        fetch("http://localhost:3001/slack/workspace/remove/"+ data.id+ "/"+ user.id, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(res => res.json())
+        postToServer("workspace/remove/"+ data.id+ "/"+ user.id, {}, context)
             .then(res => {
                 load()
             })
-            .catch(err => {
-                alert(JSON.stringify( err))
-            })
+            .catch(err => console.error(err))
     }
     return(
         <Container style={{ boxShadow: "1px 2px 10px rgba(0, 0, 0, 0.25)"}}>
@@ -143,13 +121,7 @@ function Teams({ teams, load }) {
 
     function joinTeam(event, data) {
         let user = context.user;
-        fetch("http://localhost:3001/slack/team/join/"+ data.id+ "/"+ user.id, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(res => res.json())
+        postToServer("team/join/"+ data.id+ "/"+ user.id, {}, context)
             .then(res => {
                 load()
             })
@@ -159,13 +131,7 @@ function Teams({ teams, load }) {
     }
     function removeTeam(event, data) {
         let user = context.user;
-        fetch("http://localhost:3001/slack/team/remove/"+ data.id+ "/"+ user.id, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(res => res.json())
+        postToServer("team/remove/"+ data.id+ "/"+ user.id, {}, context)
             .then(res => {
                 load()
             })

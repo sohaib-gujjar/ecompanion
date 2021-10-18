@@ -37,7 +37,7 @@ AuthRouter.post(`${path}/login`, validateDTO(LoginDTO), async (req: Request, res
                   lastName: user.lastName,
                   email: user.email,
                   img: user.img
-                }, exp: 60000,
+                }, exp: Math.floor(Date.now() / 1000) + (60 * 60), // 1hour
               },
               process.env.TOKEN_KEY
             );
